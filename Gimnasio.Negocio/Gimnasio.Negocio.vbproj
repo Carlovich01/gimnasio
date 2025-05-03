@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <RootNamespace>Gimnasio.Negocio</RootNamespace>
+    <TargetFramework>net9.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Gimnasio.Datos\Gimnasio.Datos.vbproj" />
+    <ProjectReference Include="..\Gimnasio.Entidades\Gimnasio.Entidades.vbproj" />
+  </ItemGroup>
+
+</Project>
