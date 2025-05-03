@@ -24,10 +24,9 @@ Partial Class FrmMembresias
     Private Sub InitializeComponent()
         Dim DataGridViewCellStyle1 As DataGridViewCellStyle = New DataGridViewCellStyle()
         Dim DataGridViewCellStyle2 As DataGridViewCellStyle = New DataGridViewCellStyle()
-        Dim DataGridViewCellStyle3 As DataGridViewCellStyle = New DataGridViewCellStyle()
+        cbOpcionBuscar = New ComboBox()
         lblTotal = New Label()
         btnActualizar = New Button()
-        btnEliminar = New Button()
         btnDesactivar = New Button()
         btnActivar = New Button()
         dgvListado = New DataGridView()
@@ -35,6 +34,16 @@ Partial Class FrmMembresias
         btnInsertar = New Button()
         CType(dgvListado, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
+        ' 
+        ' cbOpcionBuscar
+        ' 
+        cbOpcionBuscar.Font = New Font("Segoe UI", 12F)
+        cbOpcionBuscar.FormattingEnabled = True
+        cbOpcionBuscar.Items.AddRange(New Object() {"Buscar por nombre", "Buscar por DNI"})
+        cbOpcionBuscar.Location = New Point(842, 13)
+        cbOpcionBuscar.Name = "cbOpcionBuscar"
+        cbOpcionBuscar.Size = New Size(155, 29)
+        cbOpcionBuscar.TabIndex = 31
         ' 
         ' lblTotal
         ' 
@@ -46,7 +55,7 @@ Partial Class FrmMembresias
         lblTotal.Location = New Point(811, 687)
         lblTotal.Name = "lblTotal"
         lblTotal.Size = New Size(42, 21)
-        lblTotal.TabIndex = 21
+        lblTotal.TabIndex = 29
         lblTotal.Text = "Total"
         ' 
         ' btnActualizar
@@ -56,20 +65,9 @@ Partial Class FrmMembresias
         btnActualizar.Location = New Point(118, 687)
         btnActualizar.Name = "btnActualizar"
         btnActualizar.Size = New Size(92, 28)
-        btnActualizar.TabIndex = 17
+        btnActualizar.TabIndex = 26
         btnActualizar.Text = "Actualizar"
         btnActualizar.UseVisualStyleBackColor = True
-        ' 
-        ' btnEliminar
-        ' 
-        btnEliminar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
-        btnEliminar.Font = New Font("Segoe UI", 12F)
-        btnEliminar.Location = New Point(227, 687)
-        btnEliminar.Name = "btnEliminar"
-        btnEliminar.Size = New Size(92, 28)
-        btnEliminar.TabIndex = 20
-        btnEliminar.Text = "Eliminar"
-        btnEliminar.UseVisualStyleBackColor = True
         ' 
         ' btnDesactivar
         ' 
@@ -78,7 +76,7 @@ Partial Class FrmMembresias
         btnDesactivar.Location = New Point(444, 687)
         btnDesactivar.Name = "btnDesactivar"
         btnDesactivar.Size = New Size(92, 28)
-        btnDesactivar.TabIndex = 18
+        btnDesactivar.TabIndex = 27
         btnDesactivar.Text = "Desactivar"
         btnDesactivar.UseVisualStyleBackColor = True
         ' 
@@ -89,7 +87,7 @@ Partial Class FrmMembresias
         btnActivar.Location = New Point(334, 687)
         btnActivar.Name = "btnActivar"
         btnActivar.Size = New Size(92, 28)
-        btnActivar.TabIndex = 19
+        btnActivar.TabIndex = 28
         btnActivar.Text = "Activar"
         btnActivar.UseVisualStyleBackColor = True
         ' 
@@ -110,37 +108,29 @@ Partial Class FrmMembresias
         DataGridViewCellStyle1.WrapMode = DataGridViewTriState.True
         dgvListado.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         dgvListado.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
-        DataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle2.BackColor = SystemColors.Window
-        DataGridViewCellStyle2.Font = New Font("Segoe UI", 9F)
-        DataGridViewCellStyle2.ForeColor = SystemColors.ControlText
-        DataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText
-        DataGridViewCellStyle2.WrapMode = DataGridViewTriState.False
-        dgvListado.DefaultCellStyle = DataGridViewCellStyle2
         dgvListado.GridColor = Color.FromArgb(CByte(5), CByte(18), CByte(26))
         dgvListado.Location = New Point(11, 57)
         dgvListado.Name = "dgvListado"
         dgvListado.ReadOnly = True
-        DataGridViewCellStyle3.Alignment = DataGridViewContentAlignment.MiddleLeft
-        DataGridViewCellStyle3.BackColor = SystemColors.Window
-        DataGridViewCellStyle3.Font = New Font("Segoe UI", 9F)
-        DataGridViewCellStyle3.ForeColor = SystemColors.WindowText
-        DataGridViewCellStyle3.SelectionBackColor = SystemColors.Highlight
-        DataGridViewCellStyle3.SelectionForeColor = SystemColors.HighlightText
-        DataGridViewCellStyle3.WrapMode = DataGridViewTriState.True
-        dgvListado.RowHeadersDefaultCellStyle = DataGridViewCellStyle3
+        DataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft
+        DataGridViewCellStyle2.BackColor = SystemColors.Window
+        DataGridViewCellStyle2.Font = New Font("Segoe UI", 9F)
+        DataGridViewCellStyle2.ForeColor = SystemColors.WindowText
+        DataGridViewCellStyle2.SelectionBackColor = SystemColors.Highlight
+        DataGridViewCellStyle2.SelectionForeColor = SystemColors.HighlightText
+        DataGridViewCellStyle2.WrapMode = DataGridViewTriState.True
+        dgvListado.RowHeadersDefaultCellStyle = DataGridViewCellStyle2
         dgvListado.SelectionMode = DataGridViewSelectionMode.FullRowSelect
         dgvListado.Size = New Size(986, 618)
-        dgvListado.TabIndex = 15
+        dgvListado.TabIndex = 24
         ' 
         ' tbBuscar
         ' 
         tbBuscar.Font = New Font("Segoe UI", 12F)
         tbBuscar.Location = New Point(11, 13)
         tbBuscar.Name = "tbBuscar"
-        tbBuscar.Size = New Size(866, 29)
-        tbBuscar.TabIndex = 16
+        tbBuscar.Size = New Size(809, 29)
+        tbBuscar.TabIndex = 25
         ' 
         ' btnInsertar
         ' 
@@ -149,7 +139,7 @@ Partial Class FrmMembresias
         btnInsertar.Location = New Point(11, 686)
         btnInsertar.Name = "btnInsertar"
         btnInsertar.Size = New Size(92, 28)
-        btnInsertar.TabIndex = 22
+        btnInsertar.TabIndex = 30
         btnInsertar.Text = "Insertar"
         btnInsertar.UseVisualStyleBackColor = True
         ' 
@@ -159,9 +149,9 @@ Partial Class FrmMembresias
         AutoScaleMode = AutoScaleMode.Font
         BackColor = Color.FromArgb(CByte(5), CByte(18), CByte(26))
         ClientSize = New Size(1008, 729)
+        Controls.Add(cbOpcionBuscar)
         Controls.Add(lblTotal)
         Controls.Add(btnActualizar)
-        Controls.Add(btnEliminar)
         Controls.Add(btnDesactivar)
         Controls.Add(btnActivar)
         Controls.Add(dgvListado)
@@ -174,9 +164,9 @@ Partial Class FrmMembresias
         PerformLayout()
     End Sub
 
+    Friend WithEvents cbOpcionBuscar As ComboBox
     Friend WithEvents lblTotal As Label
     Friend WithEvents btnActualizar As Button
-    Friend WithEvents btnEliminar As Button
     Friend WithEvents btnDesactivar As Button
     Friend WithEvents btnActivar As Button
     Friend WithEvents dgvListado As DataGridView
