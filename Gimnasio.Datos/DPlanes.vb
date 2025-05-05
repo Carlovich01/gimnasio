@@ -9,7 +9,7 @@ Public Class DPlanes
     Public Function Listar() As DataTable
         Try
             Using conexion As New MySqlConnection(connectionString)
-                Dim query As String = "SELECT * FROM planes_membresia"
+                Dim query As String = "SELECT * FROM planes_membresia ORDER BY ultima_modificacion DESC"
                 Dim adapter As New MySqlDataAdapter(query, conexion)
                 Dim tabla As New DataTable()
                 adapter.Fill(tabla)
@@ -72,42 +72,11 @@ Public Class DPlanes
         End Try
     End Sub
 
-    Public Sub Activar(id As Integer)
-        Try
-            Using conexion As New MySqlConnection(connectionString)
-                conexion.Open()
-                Dim query As String = "UPDATE planes_membresia SET estado = 'Activo' WHERE id_plan = @id"
-                Using comando As New MySqlCommand(query, conexion)
-                    comando.Parameters.AddWithValue("@id", id)
-                    comando.ExecuteNonQuery()
-                End Using
-            End Using
-        Catch ex As Exception
-            Throw New Exception(ex.Message)
-        End Try
-    End Sub
-
-    Public Sub Desactivar(id As Integer)
-        Try
-            Using conexion As New MySqlConnection(connectionString)
-                conexion.Open()
-                Dim query As String = "UPDATE planes_membresia SET estado = 'Inactivo' WHERE id_plan = @id"
-                Using comando As New MySqlCommand(query, conexion)
-                    comando.Parameters.AddWithValue("@id", id)
-                    comando.ExecuteNonQuery()
-                End Using
-            End Using
-        Catch ex As Exception
-            Throw New Exception(ex.Message)
-        End Try
-    End Sub
-
-
     Public Function BuscarPorNombre(nombre As String) As DataTable
         Try
             Using conexion As New MySqlConnection(connectionString)
                 conexion.Open()
-                Dim query As String = "SELECT * FROM planes_membresia WHERE nombre_plan LIKE @nombre"
+                Dim query As String = "SELECT * FROM planes_membresia WHERE nombre_plan LIKE @nombre ORDER BY ultima_modificacion DESC"
                 Using comando As New MySqlCommand(query, conexion)
                     comando.Parameters.AddWithValue("@nombre", "%" & nombre & "%")
                     Dim adapter As New MySqlDataAdapter(comando)
@@ -121,5 +90,39 @@ Public Class DPlanes
         End Try
     End Function
 
+    Public Function BuscarPorDuracion(duracion As Integer) As DataTable
+        Try
+            Using conexion As New MySqlConnection(connectionString)
+                conexion.Open()
+                Dim query As String = "SELECT * FROM planes_membresia WHERE duracion_dias = @duracion ORDER BY ultima_modificacion DESC"
+                Using comando As New MySqlCommand(query, conexion)
+                    comando.Parameters.AddWithValue("@duracion", duracion)
+                    Dim adapter As New MySqlDataAdapter(comando)
+                    Dim tabla As New DataTable()
+                    adapter.Fill(tabla)
+                    Return tabla
+                End Using
+            End Using
+        Catch ex As Exception
+            Throw New Exception(ex.Message)
+        End Try
+    End Function
 
+    Public Function BuscarPorPrecio(precio As Decimal) As DataTable
+        Try
+            Using conexion As New MySqlConnection(connectionString)
+                conexion.Open()
+                Dim query As String = "SELECT * FROM planes_membresia WHERE precio = @precio ORDER BY ultima_modificacion DESC"
+                Using comando As New MySqlCommand(query, conexion)
+                    comando.Parameters.AddWithValue("@precio", precio)
+                    Dim adapter As New MySqlDataAdapter(comando)
+                    Dim tabla As New DataTable()
+                    adapter.Fill(tabla)
+                    Return tabla
+                End Using
+            End Using
+        Catch ex As Exception
+            Throw New Exception(ex.Message)
+        End Try
+    End Function
 End Class

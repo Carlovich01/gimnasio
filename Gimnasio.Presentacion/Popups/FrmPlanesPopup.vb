@@ -6,7 +6,6 @@ Public Class FrmPlanesPopup
     Private esNuevo As Boolean
     Private PlanPorActualizar As Planes
 
-    'constructor para nuevo plan
     Public Sub New(Nuevo As Boolean, frm As FrmPlanes)
         InitializeComponent()
         esNuevo = Nuevo
@@ -25,47 +24,47 @@ Public Class FrmPlanesPopup
     End Sub
 
     Private Sub btnGuardar_Click(sender As Object, e As EventArgs) Handles btnGuardar.Click
-        If esNuevo Then
-            Try
-                Dim nuevoPlan As New Planes()
-                If String.IsNullOrWhiteSpace(tbNombre.Text) OrElse String.IsNullOrWhiteSpace(tbDuracion.Text) OrElse String.IsNullOrWhiteSpace(tbPrecio.Text) Then
-                    MsgBox("Por favor, complete los campos obligatorios (*).", MsgBoxStyle.Exclamation, "Aviso")
-                    Return
-                End If
+        Try
+            If esNuevo Then
+                Try
+                    Dim nuevoPlan As New Planes()
+                    If String.IsNullOrWhiteSpace(tbNombre.Text) OrElse String.IsNullOrWhiteSpace(tbDuracion.Text) OrElse String.IsNullOrWhiteSpace(tbPrecio.Text) Then
+                        MsgBox("Por favor, complete los campos obligatorios (*).", MsgBoxStyle.Exclamation, "Aviso")
+                        Return
+                    End If
 
-                nuevoPlan.NombrePlan = tbNombre.Text
-                nuevoPlan.Descripcion = tbDescripcion.Text
-                nuevoPlan.DuracionDias = CUInt(tbDuracion.Text)
-                nuevoPlan.Precio = CDec(tbPrecio.Text)
+                    nuevoPlan.NombrePlan = tbNombre.Text
+                    nuevoPlan.Descripcion = tbDescripcion.Text
+                    nuevoPlan.DuracionDias = CUInt(tbDuracion.Text)
+                    nuevoPlan.Precio = CDec(tbPrecio.Text)
 
-                ' Llamar al método Insertar del formulario principal
-                frmPrincipal.Insertar(nuevoPlan)
+                    frmPrincipal.Insertar(nuevoPlan)
 
-                ' Cerrar el formulario
-                Me.Close()
-            Catch ex As Exception
-                MsgBox("Error al guardar el plan: " & ex.Message, MsgBoxStyle.Critical, "Error")
-            End Try
-        Else
-            Try
-                Dim planActualizado As New Planes()
-                If String.IsNullOrWhiteSpace(tbNombre.Text) OrElse String.IsNullOrWhiteSpace(tbDuracion.Text) OrElse String.IsNullOrWhiteSpace(tbPrecio.Text) Then
-                    MsgBox("Por favor, complete los campos obligatorios (*).", MsgBoxStyle.Exclamation, "Aviso")
-                    Return
-                End If
-                planActualizado.IdPlan = PlanPorActualizar.IdPlan
-                planActualizado.NombrePlan = tbNombre.Text
-                planActualizado.Descripcion = tbDescripcion.Text
-                planActualizado.DuracionDias = CUInt(tbDuracion.Text)
-                planActualizado.Precio = CDec(tbPrecio.Text)
-                ' Llamar al método Actualizar del formulario principal
-                frmPrincipal.Actualizar(planActualizado)
-                ' Cerrar el formulario
-                Me.Close()
-            Catch ex As Exception
-                MsgBox("Error al actualizar el plan: " & ex.Message, MsgBoxStyle.Critical, "Error")
-            End Try
-        End If
+                    Me.Close()
+                Catch ex As Exception
+                    MsgBox("Error al guardar el plan: " & ex.Message, MsgBoxStyle.Critical, "Error")
+                End Try
+            Else
+                Try
+                    Dim planActualizado As New Planes()
+                    If String.IsNullOrWhiteSpace(tbNombre.Text) OrElse String.IsNullOrWhiteSpace(tbDuracion.Text) OrElse String.IsNullOrWhiteSpace(tbPrecio.Text) Then
+                        MsgBox("Por favor, complete los campos obligatorios (*).", MsgBoxStyle.Exclamation, "Aviso")
+                        Return
+                    End If
+                    planActualizado.IdPlan = PlanPorActualizar.IdPlan
+                    planActualizado.NombrePlan = tbNombre.Text
+                    planActualizado.Descripcion = tbDescripcion.Text
+                    planActualizado.DuracionDias = CUInt(tbDuracion.Text)
+                    planActualizado.Precio = CDec(tbPrecio.Text)
+                    frmPrincipal.Actualizar(planActualizado)
+                    Me.Close()
+                Catch ex As Exception
+                    MsgBox("Error al actualizar el plan: " & ex.Message, MsgBoxStyle.Critical, "Error")
+                End Try
+            End If
+        Catch ex As Exception
+            MsgBox("Error al guardar el plan: " & ex.Message, MsgBoxStyle.Critical, "Error")
+        End Try
     End Sub
 
     Private Sub btnCancelar_Click(sender As Object, e As EventArgs) Handles btnCancelar.Click

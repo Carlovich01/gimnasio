@@ -28,19 +28,20 @@ Partial Class FrmPrincipal
         ToolStripSeparator3 = New ToolStripSeparator()
         btnMiembros = New ToolStripButton()
         ToolStripSeparator1 = New ToolStripSeparator()
-        ToolStripSeparator2 = New ToolStripSeparator()
         btnMembresias = New ToolStripButton()
+        ToolStripSeparator2 = New ToolStripSeparator()
         btnPagos = New ToolStripButton()
         ToolStripSeparator4 = New ToolStripSeparator()
         btnAsistencia = New ToolStripButton()
-        ToolStripSeparator5 = New ToolStripSeparator()
-        btnReclamos = New ToolStripButton()
+        ToolStripSeparator9 = New ToolStripSeparator()
+        btRegistroAsistencias = New ToolStripButton()
         ToolStripSeparator6 = New ToolStripSeparator()
-        btnUsuarios = New ToolStripButton()
-        ToolStripSeparator7 = New ToolStripSeparator()
-        btnRoles = New ToolStripButton()
+        btnReclamos = New ToolStripButton()
         ToolStripSeparator8 = New ToolStripSeparator()
+        btnUsuarios = New ToolStripButton()
+        ToolStripSeparator5 = New ToolStripSeparator()
         Panel1 = New Panel()
+        lblBienvenido = New Label()
         PictureBox1 = New PictureBox()
         ToolStrip1.SuspendLayout()
         Panel1.SuspendLayout()
@@ -50,7 +51,7 @@ Partial Class FrmPrincipal
         ' ToolStrip1
         ' 
         ToolStrip1.BackColor = Color.FromArgb(CByte(123), CByte(179), CByte(75))
-        ToolStrip1.Items.AddRange(New ToolStripItem() {btnPlanes, ToolStripSeparator3, btnMiembros, ToolStripSeparator1, btnMembresias, ToolStripSeparator2, btnPagos, ToolStripSeparator4, btnAsistencia, ToolStripSeparator5, btnReclamos, ToolStripSeparator6, btnUsuarios, ToolStripSeparator7, btnRoles, ToolStripSeparator8})
+        ToolStrip1.Items.AddRange(New ToolStripItem() {btnPlanes, ToolStripSeparator3, btnMiembros, ToolStripSeparator1, btnMembresias, ToolStripSeparator2, btnPagos, ToolStripSeparator4, btnAsistencia, ToolStripSeparator9, btRegistroAsistencias, ToolStripSeparator6, btnReclamos, ToolStripSeparator8, btnUsuarios, ToolStripSeparator5})
         ToolStrip1.Location = New Point(0, 0)
         ToolStrip1.Name = "ToolStrip1"
         ToolStrip1.Size = New Size(1008, 28)
@@ -87,11 +88,6 @@ Partial Class FrmPrincipal
         ToolStripSeparator1.Name = "ToolStripSeparator1"
         ToolStripSeparator1.Size = New Size(6, 28)
         ' 
-        ' ToolStripSeparator2
-        ' 
-        ToolStripSeparator2.Name = "ToolStripSeparator2"
-        ToolStripSeparator2.Size = New Size(6, 28)
-        ' 
         ' btnMembresias
         ' 
         btnMembresias.DisplayStyle = ToolStripItemDisplayStyle.Text
@@ -101,6 +97,11 @@ Partial Class FrmPrincipal
         btnMembresias.Name = "btnMembresias"
         btnMembresias.Size = New Size(99, 25)
         btnMembresias.Text = "Membresías"
+        ' 
+        ' ToolStripSeparator2
+        ' 
+        ToolStripSeparator2.Name = "ToolStripSeparator2"
+        ToolStripSeparator2.Size = New Size(6, 28)
         ' 
         ' btnPagos
         ' 
@@ -127,10 +128,25 @@ Partial Class FrmPrincipal
         btnAsistencia.Size = New Size(83, 25)
         btnAsistencia.Text = "Asistencia"
         ' 
-        ' ToolStripSeparator5
+        ' ToolStripSeparator9
         ' 
-        ToolStripSeparator5.Name = "ToolStripSeparator5"
-        ToolStripSeparator5.Size = New Size(6, 28)
+        ToolStripSeparator9.Name = "ToolStripSeparator9"
+        ToolStripSeparator9.Size = New Size(6, 28)
+        ' 
+        ' btRegistroAsistencias
+        ' 
+        btRegistroAsistencias.DisplayStyle = ToolStripItemDisplayStyle.Text
+        btRegistroAsistencias.Font = New Font("Segoe UI", 12F)
+        btRegistroAsistencias.Image = CType(resources.GetObject("btRegistroAsistencias.Image"), Image)
+        btRegistroAsistencias.ImageTransparentColor = Color.Magenta
+        btRegistroAsistencias.Name = "btRegistroAsistencias"
+        btRegistroAsistencias.Size = New Size(152, 25)
+        btRegistroAsistencias.Text = "Registro Asistencias"
+        ' 
+        ' ToolStripSeparator6
+        ' 
+        ToolStripSeparator6.Name = "ToolStripSeparator6"
+        ToolStripSeparator6.Size = New Size(6, 28)
         ' 
         ' btnReclamos
         ' 
@@ -142,44 +158,30 @@ Partial Class FrmPrincipal
         btnReclamos.Size = New Size(81, 25)
         btnReclamos.Text = "Reclamos"
         ' 
-        ' ToolStripSeparator6
+        ' ToolStripSeparator8
         ' 
-        ToolStripSeparator6.Name = "ToolStripSeparator6"
-        ToolStripSeparator6.Size = New Size(6, 28)
+        ToolStripSeparator8.Name = "ToolStripSeparator8"
+        ToolStripSeparator8.Size = New Size(6, 28)
         ' 
         ' btnUsuarios
         ' 
         btnUsuarios.DisplayStyle = ToolStripItemDisplayStyle.Text
-        btnUsuarios.Font = New Font("Segoe UI", 12F)
+        btnUsuarios.Font = New Font("Segoe UI", 12F, FontStyle.Regular, GraphicsUnit.Point, CByte(0))
         btnUsuarios.Image = CType(resources.GetObject("btnUsuarios.Image"), Image)
         btnUsuarios.ImageTransparentColor = Color.Magenta
         btnUsuarios.Name = "btnUsuarios"
         btnUsuarios.Size = New Size(75, 25)
         btnUsuarios.Text = "Usuarios"
         ' 
-        ' ToolStripSeparator7
+        ' ToolStripSeparator5
         ' 
-        ToolStripSeparator7.Name = "ToolStripSeparator7"
-        ToolStripSeparator7.Size = New Size(6, 28)
-        ' 
-        ' btnRoles
-        ' 
-        btnRoles.DisplayStyle = ToolStripItemDisplayStyle.Text
-        btnRoles.Font = New Font("Segoe UI", 12F)
-        btnRoles.Image = CType(resources.GetObject("btnRoles.Image"), Image)
-        btnRoles.ImageTransparentColor = Color.Magenta
-        btnRoles.Name = "btnRoles"
-        btnRoles.Size = New Size(52, 25)
-        btnRoles.Text = "Roles"
-        ' 
-        ' ToolStripSeparator8
-        ' 
-        ToolStripSeparator8.Name = "ToolStripSeparator8"
-        ToolStripSeparator8.Size = New Size(6, 28)
+        ToolStripSeparator5.Name = "ToolStripSeparator5"
+        ToolStripSeparator5.Size = New Size(6, 28)
         ' 
         ' Panel1
         ' 
         Panel1.BackColor = Color.FromArgb(CByte(5), CByte(18), CByte(26))
+        Panel1.Controls.Add(lblBienvenido)
         Panel1.Controls.Add(PictureBox1)
         Panel1.Dock = DockStyle.Fill
         Panel1.Location = New Point(0, 28)
@@ -187,11 +189,24 @@ Partial Class FrmPrincipal
         Panel1.Size = New Size(1008, 701)
         Panel1.TabIndex = 1
         ' 
+        ' lblBienvenido
+        ' 
+        lblBienvenido.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        lblBienvenido.AutoSize = True
+        lblBienvenido.Font = New Font("Segoe UI", 20F)
+        lblBienvenido.ForeColor = Color.White
+        lblBienvenido.Location = New Point(664, 605)
+        lblBienvenido.Name = "lblBienvenido"
+        lblBienvenido.Size = New Size(147, 37)
+        lblBienvenido.TabIndex = 1
+        lblBienvenido.Text = "Bienvenida"
+        lblBienvenido.Visible = False
+        ' 
         ' PictureBox1
         ' 
         PictureBox1.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
         PictureBox1.Image = CType(resources.GetObject("PictureBox1.Image"), Image)
-        PictureBox1.Location = New Point(133, 119)
+        PictureBox1.Location = New Point(135, 70)
         PictureBox1.Name = "PictureBox1"
         PictureBox1.Size = New Size(755, 472)
         PictureBox1.SizeMode = PictureBoxSizeMode.Zoom
@@ -212,6 +227,7 @@ Partial Class FrmPrincipal
         ToolStrip1.ResumeLayout(False)
         ToolStrip1.PerformLayout()
         Panel1.ResumeLayout(False)
+        Panel1.PerformLayout()
         CType(PictureBox1, ComponentModel.ISupportInitialize).EndInit()
         ResumeLayout(False)
         PerformLayout()
@@ -229,11 +245,12 @@ Partial Class FrmPrincipal
     Friend WithEvents btnPagos As ToolStripButton
     Friend WithEvents btnAsistencia As ToolStripButton
     Friend WithEvents ToolStripSeparator4 As ToolStripSeparator
-    Friend WithEvents ToolStripSeparator5 As ToolStripSeparator
     Friend WithEvents btnReclamos As ToolStripButton
     Friend WithEvents ToolStripSeparator6 As ToolStripSeparator
-    Friend WithEvents btnUsuarios As ToolStripButton
-    Friend WithEvents ToolStripSeparator7 As ToolStripSeparator
-    Friend WithEvents btnRoles As ToolStripButton
     Friend WithEvents ToolStripSeparator8 As ToolStripSeparator
+    Friend WithEvents btRegistroAsistencias As ToolStripButton
+    Friend WithEvents ToolStripSeparator9 As ToolStripSeparator
+    Friend WithEvents btnUsuarios As ToolStripButton
+    Friend WithEvents ToolStripSeparator5 As ToolStripSeparator
+    Friend WithEvents lblBienvenido As Label
 End Class

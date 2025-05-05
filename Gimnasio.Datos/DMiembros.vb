@@ -8,7 +8,7 @@ Public Class DMiembros
     Public Function Listar() As DataTable
         Try
             Using conexion As New MySqlConnection(connectionString)
-                Dim query As String = "SELECT * FROM miembros"
+                Dim query As String = "SELECT * FROM miembros ORDER BY ultima_modificacion DESC"
                 Dim adapter As New MySqlDataAdapter(query, conexion)
                 Dim tabla As New DataTable()
                 adapter.Fill(tabla)
@@ -23,12 +23,11 @@ Public Class DMiembros
         Try
             Using conexion As New MySqlConnection(connectionString)
                 conexion.Open()
-                Dim query As String = "INSERT INTO miembros (dni, nombre, apellido, fecha_nacimiento, genero, telefono, email) VALUES (@dni, @nom, @ape, @fecha, @gen, @tel, @ema)"
+                Dim query As String = "INSERT INTO miembros (dni, nombre, apellido, genero, telefono, email) VALUES (@dni, @nom, @ape, @gen, @tel, @ema)"
                 Using comando As New MySqlCommand(query, conexion)
                     comando.Parameters.AddWithValue("@dni", Obj.Dni)
                     comando.Parameters.AddWithValue("@nom", Obj.Nombre)
                     comando.Parameters.AddWithValue("@ape", Obj.Apellido)
-                    comando.Parameters.AddWithValue("@fecha", Obj.FechaNacimiento)
                     comando.Parameters.AddWithValue("@gen", Obj.Genero)
                     comando.Parameters.AddWithValue("@tel", Obj.Telefono)
                     comando.Parameters.AddWithValue("@ema", Obj.Email)
@@ -44,13 +43,12 @@ Public Class DMiembros
         Try
             Using conexion As New MySqlConnection(connectionString)
                 conexion.Open()
-                Dim query As String = "UPDATE miembros SET dni = @dni, nombre = @nom, apellido = @ape, fecha_nacimiento = @fecha, genero = @gen, telefono = @tel, email = @ema WHERE id_miembro = @id"
+                Dim query As String = "UPDATE miembros SET dni = @dni, nombre = @nom, apellido = @ape, genero = @gen, telefono = @tel, email = @ema WHERE id_miembro = @id"
 
                 Using comando As New MySqlCommand(query, conexion)
                     comando.Parameters.AddWithValue("@dni", Obj.Dni)
                     comando.Parameters.AddWithValue("@nom", Obj.Nombre)
                     comando.Parameters.AddWithValue("@ape", Obj.Apellido)
-                    comando.Parameters.AddWithValue("@fecha", Obj.FechaNacimiento)
                     comando.Parameters.AddWithValue("@gen", Obj.Genero)
                     comando.Parameters.AddWithValue("@tel", Obj.Telefono)
                     comando.Parameters.AddWithValue("@ema", Obj.Email)
@@ -64,11 +62,11 @@ Public Class DMiembros
         End Try
     End Sub
 
-    Public Sub Activar(id As Integer)
+    Public Sub Eliminar(id As Integer)
         Try
             Using conexion As New MySqlConnection(connectionString)
                 conexion.Open()
-                Dim query As String = "UPDATE miembros SET estado = 'Activo' WHERE id_miembro = @id"
+                Dim query As String = "DELETE FROM miembros WHERE id_miembro = @id"
                 Using comando As New MySqlCommand(query, conexion)
                     comando.Parameters.AddWithValue("@id", id)
                     comando.ExecuteNonQuery()
@@ -78,30 +76,15 @@ Public Class DMiembros
             Throw New Exception(ex.Message)
         End Try
     End Sub
-
-    Public Sub Desactivar(id As Integer)
-        Try
-            Using conexion As New MySqlConnection(connectionString)
-                conexion.Open()
-                Dim query As String = "UPDATE miembros SET estado = 'Inactivo' WHERE id_miembro = @id"
-                Using comando As New MySqlCommand(query, conexion)
-                    comando.Parameters.AddWithValue("@id", id)
-                    comando.ExecuteNonQuery()
-                End Using
-            End Using
-        Catch ex As Exception
-            Throw New Exception(ex.Message)
-        End Try
-    End Sub
-
 
     Public Function BuscarPorNombre(nombre As String) As DataTable
         Try
             Using conexion As New MySqlConnection(connectionString)
                 conexion.Open()
-                Dim query As String = "SELECT * FROM miembros WHERE nombre LIKE @nombre"
+                Dim query As String = "SELECT * FROM miembros WHERE nombre LIKE @nombre OR apellido LIKE @apellido ORDER BY ultima_modificacion DESC"
                 Using comando As New MySqlCommand(query, conexion)
                     comando.Parameters.AddWithValue("@nombre", "%" & nombre & "%")
+                    comando.Parameters.AddWithValue("@apellido", "%" & nombre & "%")
                     Dim adapter As New MySqlDataAdapter(comando)
                     Dim tabla As New DataTable()
                     adapter.Fill(tabla)
@@ -117,9 +100,9 @@ Public Class DMiembros
         Try
             Using conexion As New MySqlConnection(connectionString)
                 conexion.Open()
-                Dim query As String = "SELECT * FROM miembros WHERE dni LIKE @dni"
+                Dim query As String = "SELECT * FROM miembros WHERE dni = @dni"
                 Using comando As New MySqlCommand(query, conexion)
-                    comando.Parameters.AddWithValue("@dni", "%" & dni & "%")
+                    comando.Parameters.AddWithValue("@dni", dni)
                     Dim adapter As New MySqlDataAdapter(comando)
                     Dim tabla As New DataTable()
                     adapter.Fill(tabla)
@@ -130,5 +113,4 @@ Public Class DMiembros
             Throw New Exception(ex.Message)
         End Try
     End Function
-
 End Class

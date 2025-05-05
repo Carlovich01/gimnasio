@@ -27,11 +27,10 @@ Partial Class FrmPlanes
         dgvListado = New DataGridView()
         tbBuscar = New TextBox()
         btnActualizar = New Button()
-        btnActivar = New Button()
         btnEliminar = New Button()
         lblTotal = New Label()
         btnInsertar = New Button()
-        btnDesactivar = New Button()
+        cbOpcionBuscar = New ComboBox()
         CType(dgvListado, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
@@ -54,6 +53,7 @@ Partial Class FrmPlanes
         dgvListado.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         dgvListado.GridColor = Color.FromArgb(CByte(5), CByte(18), CByte(26))
         dgvListado.Location = New Point(12, 60)
+        dgvListado.MultiSelect = False
         dgvListado.Name = "dgvListado"
         dgvListado.ReadOnly = True
         DataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft
@@ -73,7 +73,7 @@ Partial Class FrmPlanes
         tbBuscar.Font = New Font("Segoe UI", 12F)
         tbBuscar.Location = New Point(12, 16)
         tbBuscar.Name = "tbBuscar"
-        tbBuscar.Size = New Size(866, 29)
+        tbBuscar.Size = New Size(747, 29)
         tbBuscar.TabIndex = 1
         ' 
         ' btnActualizar
@@ -86,17 +86,6 @@ Partial Class FrmPlanes
         btnActualizar.TabIndex = 3
         btnActualizar.Text = "Actualizar"
         btnActualizar.UseVisualStyleBackColor = True
-        ' 
-        ' btnActivar
-        ' 
-        btnActivar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
-        btnActivar.Font = New Font("Segoe UI", 12F)
-        btnActivar.Location = New Point(335, 690)
-        btnActivar.Name = "btnActivar"
-        btnActivar.Size = New Size(92, 28)
-        btnActivar.TabIndex = 4
-        btnActivar.Text = "Activar"
-        btnActivar.UseVisualStyleBackColor = True
         ' 
         ' btnEliminar
         ' 
@@ -133,16 +122,15 @@ Partial Class FrmPlanes
         btnInsertar.Text = "Insertar"
         btnInsertar.UseVisualStyleBackColor = True
         ' 
-        ' btnDesactivar
+        ' cbOpcionBuscar
         ' 
-        btnDesactivar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
-        btnDesactivar.Font = New Font("Segoe UI", 12F)
-        btnDesactivar.Location = New Point(445, 690)
-        btnDesactivar.Name = "btnDesactivar"
-        btnDesactivar.Size = New Size(92, 28)
-        btnDesactivar.TabIndex = 4
-        btnDesactivar.Text = "Desactivar"
-        btnDesactivar.UseVisualStyleBackColor = True
+        cbOpcionBuscar.Font = New Font("Segoe UI", 12F)
+        cbOpcionBuscar.FormattingEnabled = True
+        cbOpcionBuscar.Items.AddRange(New Object() {"Buscar por nombre", "Buscar por duracion", "Buscar por precio"})
+        cbOpcionBuscar.Location = New Point(792, 16)
+        cbOpcionBuscar.Name = "cbOpcionBuscar"
+        cbOpcionBuscar.Size = New Size(206, 29)
+        cbOpcionBuscar.TabIndex = 24
         ' 
         ' FrmPlanes
         ' 
@@ -150,11 +138,10 @@ Partial Class FrmPlanes
         AutoScaleMode = AutoScaleMode.Font
         BackColor = Color.FromArgb(CByte(5), CByte(18), CByte(26))
         ClientSize = New Size(1008, 729)
+        Controls.Add(cbOpcionBuscar)
         Controls.Add(lblTotal)
         Controls.Add(btnActualizar)
         Controls.Add(btnEliminar)
-        Controls.Add(btnDesactivar)
-        Controls.Add(btnActivar)
         Controls.Add(dgvListado)
         Controls.Add(tbBuscar)
         Controls.Add(btnInsertar)
@@ -168,9 +155,8 @@ Partial Class FrmPlanes
     Friend WithEvents dgvListado As DataGridView
     Friend WithEvents tbBuscar As TextBox
     Friend WithEvents btnActualizar As Button
-    Friend WithEvents btnActivar As Button
     Friend WithEvents btnEliminar As Button
     Friend WithEvents lblTotal As Label
     Friend WithEvents btnInsertar As Button
-    Friend WithEvents btnDesactivar As Button
+    Friend WithEvents cbOpcionBuscar As ComboBox
 End Class

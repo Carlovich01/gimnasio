@@ -4,11 +4,14 @@ Imports Gimnasio.Negocio
 Public Class FrmMembresias
     Private nMembresias As New NMembresias()
 
+
     Private Sub FrmPlanes_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Try
             ActualizarDataGridView()
 
-            'dgvListado.Columns(0).Visible = False 
+            dgvListado.Columns(0).Visible = False
+            dgvListado.Columns(1).Visible = False
+            dgvListado.Columns(2).Visible = False
             dgvListado.Columns(0).HeaderText = "ID MEMBRESIA"
             dgvListado.Columns(1).HeaderText = "ID MIEMBRO"
             dgvListado.Columns(2).HeaderText = "ID PLAN"
@@ -23,6 +26,7 @@ Public Class FrmMembresias
             dgvListado.Columns(11).HeaderText = "ESTADO"
             dgvListado.Columns(12).HeaderText = "FECHA REGISTRO"
             dgvListado.Columns(13).HeaderText = "ULTIMA MODIFICACION"
+
 
             cbOpcionBuscar.SelectedIndex = 0
 
@@ -45,7 +49,6 @@ Public Class FrmMembresias
     Private Sub btnInsertar_Click_1(sender As Object, e As EventArgs) Handles btnInsertar.Click
         Try
             Dim frm As New FrmMembresiasPopup()
-            frm.Dock = DockStyle.Fill
             frm.ShowDialog()
             ActualizarDataGridView()
         Catch ex As Exception
@@ -53,106 +56,66 @@ Public Class FrmMembresias
         End Try
     End Sub
 
-    'Public Sub Insertar(miembro As Miembros, plan As Planes, membresia As Membresias)
-    '    Try
-    '        nMembresias.Insertar(nuevoMiembro)
-    '        ' Actualizar el DataGridView
-    '        ActualizarDataGridView()
-    '        MsgBox("Miembro agregado exitosamente.", MsgBoxStyle.Information, "Exito")
-    '    Catch ex As Exception
-    '        MsgBox("Error al agregar el miembro: " & ex.Message, MsgBoxStyle.Critical, "Error")
-    '    End Try
-    'End Sub
+    Private Sub BtnPagar_Click(sender As Object, e As EventArgs) Handles BtnPagar.Click
+        Try
+            If dgvListado.SelectedRows.Count > 0 Then
+                Dim selectedRow As DataGridViewRow = dgvListado.SelectedRows(0)
+                Dim idMembresia As Integer = CInt(selectedRow.Cells("id_membresia").Value)
+                Dim precio As Decimal = Convert.ToDecimal(selectedRow.Cells("precio_plan").Value)
+                Dim estadoMembresia As String = selectedRow.Cells("estado_membresia").Value.ToString()
+
+                If estadoMembresia = "Activa" Then
+                    MsgBox("La membresía ya está activa. No es necesario realizar un pago.", MsgBoxStyle.Information, "Información")
+                    Return
+                ElseIf estadoMembresia = "Inactiva" Then
+                    Dim frmPagosPopup As New FrmPagosPopup(idMembresia, precio)
+                    frmPagosPopup.ShowDialog()
+                    ActualizarDataGridView()
+                Else
+                    MsgBox("El estado de la membresía no es válido.", MsgBoxStyle.Exclamation, "Advertencia")
+                End If
+            Else
+                MsgBox("Por favor, seleccione una fila antes de continuar.", MsgBoxStyle.Exclamation, "Advertencia")
+            End If
+        Catch ex As Exception
+            MsgBox("Error al abrir el formulario de pagos: " & ex.Message, MsgBoxStyle.Critical, "Error")
+        End Try
+    End Sub
 
 
-    'Private Sub btnActualizar_Click(sender As Object, e As EventArgs)
-    '    Try
-    '        If dgvListado.SelectedRows.Count > 0 Then
-    '            Dim selectedRow = dgvListado.SelectedRows(0)
-    '            Dim miembroPorActualizar As New Miembros
-    '            miembroPorActualizar.IdMiembro = CUInt(selectedRow.Cells("id_miembro").Value)
-    '            miembroPorActualizar.Dni = selectedRow.Cells("dni").Value.ToString
-    '            miembroPorActualizar.Nombre = selectedRow.Cells("nombre").Value.ToString
-    '            miembroPorActualizar.Apellido = selectedRow.Cells("apellido").Value.ToString
-    '            miembroPorActualizar.FechaNacimiento = CDate(selectedRow.Cells("fecha_nacimiento").Value)
-    '            miembroPorActualizar.Genero = selectedRow.Cells("genero").Value.ToString
-    '            miembroPorActualizar.Telefono = selectedRow.Cells("telefono").Value.ToString
-    '            miembroPorActualizar.Email = selectedRow.Cells("email").Value.ToString
-    '            Dim frm As New FrmMiembrosPopup(False, Me, miembroPorActualizar)
-    '            frm.ShowDialog()
-    '        Else
-    '            MsgBox("Seleccione un miembro para actualizar.", MsgBoxStyle.Exclamation, "Aviso")
-    '        End If
-    '    Catch ex As Exception
-    '        MsgBox("Error al seleccionar el miembro: " & ex.Message, MsgBoxStyle.Critical, "Error")
-    '    End Try
+    Private Sub tbBuscar_TextChanged_1(sender As Object, e As EventArgs) Handles tbBuscar.TextChanged
+        Try
+            If cbOpcionBuscar.SelectedIndex = 0 Then
+                Dim dvMembresia As DataTable = nMembresias.BuscarPorDni(tbBuscar.Text)
+                dgvListado.DataSource = dvMembresia
+                lblTotal.Text = "Total: " & dgvListado.Rows.Count.ToString
+            ElseIf cbOpcionBuscar.SelectedIndex = 1 Then
+                Dim dvMembresia As DataTable = nMembresias.BuscarPorNombrePlan(tbBuscar.Text)
+                dgvListado.DataSource = dvMembresia
+                lblTotal.Text = "Total: " & dgvListado.Rows.Count.ToString
+            End If
+        Catch ex As Exception
+            MsgBox("Error al buscar miembro: " & ex.Message, MsgBoxStyle.Critical, "Error")
+        End Try
+    End Sub
 
-
-    'End Sub
-
-
-    'Public Sub Actualizar(miembroActualizado As Miembros)
-    '    Try
-    '        nMembresias.Actualizar(miembroActualizado)
-    '        ActualizarDataGridView()
-    '        MsgBox("miembro actualizado exitosamente.", MsgBoxStyle.Information, "Exito")
-    '    Catch ex As Exception
-    '        MsgBox("Error al actualizar el miembro: " & ex.Message, MsgBoxStyle.Critical, "Error")
-    '    End Try
-    'End Sub
-
-    'Private Sub btnActivar_Click(sender As Object, e As EventArgs)
-    '    Try
-    '        If dgvListado.SelectedRows.Count > 0 Then
-    '            Dim selectedRow = dgvListado.SelectedRows(0)
-    '            Dim idMiembro As Integer = selectedRow.Cells("id_miembro").Value
-    '            nMembresias.Activar(idMiembro)
-    '            ActualizarDataGridView()
-    '            MsgBox("Miembro activado exitosamente.", MsgBoxStyle.Information, "Exito")
-    '        Else
-    '            MsgBox("Seleccione un Miembro para activar.", MsgBoxStyle.Exclamation, "Aviso")
-    '        End If
-    '    Catch ex As Exception
-    '        MsgBox("Error al activar el Miembro: " & ex.Message, MsgBoxStyle.Critical, "Error")
-    '    End Try
-    'End Sub
-
-    'Private Sub btnDesactivar_Click(sender As Object, e As EventArgs)
-    '    Try
-    '        If dgvListado.SelectedRows.Count > 0 Then
-    '            Dim selectedRow = dgvListado.SelectedRows(0)
-    '            Dim idMiembro As Integer = selectedRow.Cells("id_miembro").Value
-    '            nMembresias.Desactivar(idMiembro)
-    '            ActualizarDataGridView()
-    '            MsgBox("Miembro desactivado exitosamente.", MsgBoxStyle.Information, "Exito")
-    '        Else
-    '            MsgBox("Seleccione un Miembro para desactivar.", MsgBoxStyle.Exclamation, "Aviso")
-    '        End If
-    '    Catch ex As Exception
-    '        MsgBox("Error al desactivar el Miembro: " & ex.Message, MsgBoxStyle.Critical, "Error")
-    '    End Try
-    'End Sub
-
-
-
-    'Private Sub tbBuscar_TextChanged(sender As Object, e As EventArgs)
-    '    Try
-    '        ' Verificar si hay un elemento seleccionado en el ComboBox
-    '        If cbOpcionBuscar.SelectedIndex = 0 Then
-    '            ' Buscar por nombre
-    '            Dim dvMiembro As DataTable = nMembresias.BuscarPorNombre(tbBuscar.Text)
-    '            dgvListado.DataSource = dvMiembro
-    '            lblTotal.Text = "Total: " & dgvListado.Rows.Count.ToString
-    '        ElseIf cbOpcionBuscar.SelectedIndex = 1 Then
-    '            ' Buscar por DNI
-    '            Dim dvMiembro As DataTable = nMembresias.BuscarPorDni(tbBuscar.Text)
-    '            dgvListado.DataSource = dvMiembro
-    '            lblTotal.Text = "Total: " & dgvListado.Rows.Count.ToString
-    '        End If
-    '    Catch ex As Exception
-    '        MsgBox("Error al buscar miembro: " & ex.Message, MsgBoxStyle.Critical, "Error")
-    '    End Try
-    'End Sub
-
-
+    Private Sub cbOpcionBuscar_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbOpcionBuscar.SelectedIndexChanged
+        Try
+            If cbOpcionBuscar.SelectedIndex = 2 Then
+                Dim dvMembresia As DataTable = nMembresias.BuscarPorEstado("Activa")
+                dgvListado.DataSource = dvMembresia
+                lblTotal.Text = "Total: " & dgvListado.Rows.Count.ToString
+                tbBuscar.Enabled = False
+            ElseIf cbOpcionBuscar.SelectedIndex = 3 Then
+                Dim dvMembresia As DataTable = nMembresias.BuscarPorEstado("Inactiva")
+                dgvListado.DataSource = dvMembresia
+                lblTotal.Text = "Total: " & dgvListado.Rows.Count.ToString
+                tbBuscar.Enabled = False
+            Else
+                tbBuscar.Enabled = True
+            End If
+        Catch ex As Exception
+            MsgBox("Error al buscar miembro: " & ex.Message, MsgBoxStyle.Critical, "Error")
+        End Try
+    End Sub
 End Class

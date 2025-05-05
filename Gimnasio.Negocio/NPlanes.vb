@@ -13,7 +13,6 @@ Public Class NPlanes
         Return dvPlanes
     End Function
 
-    'insertar
     Public Sub Insertar(Obj As Planes)
         Try
             dPlanes.Insertar(Obj)
@@ -38,25 +37,27 @@ Public Class NPlanes
         End Try
     End Sub
 
-    Public Sub Activar(id As Integer)
-        Try
-            dPlanes.Activar(id)
-        Catch ex As Exception
-            Throw New Exception(ex.Message)
-        End Try
-    End Sub
-
-    Public Sub Desactivar(id As Integer)
-        Try
-            dPlanes.Desactivar(id)
-        Catch ex As Exception
-            Throw New Exception(ex.Message)
-        End Try
-    End Sub
-
     Public Function BuscarPorNombre(nombre As String) As DataTable
         Try
             Dim dvPlanes As DataTable = dPlanes.BuscarPorNombre(nombre)
+            Return dvPlanes
+        Catch ex As Exception
+            Throw New Exception(ex.Message)
+        End Try
+    End Function
+
+    Public Function BuscarPorDuracion(duracion As Integer) As DataTable
+        Try
+            Dim dvPlanes As DataTable = dPlanes.BuscarPorDuracion(duracion)
+            Return dvPlanes
+        Catch ex As Exception
+            Throw New Exception(ex.Message)
+        End Try
+    End Function
+
+    Public Function BuscarPorPrecio(precio As Decimal) As DataTable
+        Try
+            Dim dvPlanes As DataTable = dPlanes.BuscarPorPrecio(precio)
             Return dvPlanes
         Catch ex As Exception
             Throw New Exception(ex.Message)

@@ -13,7 +13,6 @@ Public Class NMiembros
         Return dvMiembros
     End Function
 
-    'insertar
     Public Sub Insertar(Obj As Miembros)
         Try
             dMiembros.Insertar(Obj)
@@ -30,18 +29,9 @@ Public Class NMiembros
         End Try
     End Sub
 
-
-    Public Sub Activar(id As Integer)
+    Public Sub Eliminar(id As Integer)
         Try
-            dMiembros.Activar(id)
-        Catch ex As Exception
-            Throw New Exception(ex.Message)
-        End Try
-    End Sub
-
-    Public Sub Desactivar(id As Integer)
-        Try
-            dMiembros.Desactivar(id)
+            dMiembros.Eliminar(id)
         Catch ex As Exception
             Throw New Exception(ex.Message)
         End Try

@@ -1,5 +1,4 @@
 ﻿Public Class Membresias
-    ' Propiedades privadas
     Private _idMembresia As Integer
     Private _idMiembro As Integer
     Private _idPlan As Integer
@@ -9,7 +8,6 @@
     Private _fechaRegistro As Date
     Private _ultimaModificacion As Date
 
-    ' Propiedades públicas con encapsulación
     Public Property IdMembresia As Integer
         Get
             Return _idMembresia

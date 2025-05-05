@@ -46,6 +46,7 @@ Partial Class FrmMembresiasPopup
         ' 
         ' btnCancelar
         ' 
+        btnCancelar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
         btnCancelar.BackColor = Color.FromArgb(CByte(123), CByte(179), CByte(75))
         btnCancelar.FlatAppearance.BorderColor = Color.FromArgb(CByte(123), CByte(179), CByte(75))
         btnCancelar.FlatAppearance.BorderSize = 0
@@ -53,7 +54,7 @@ Partial Class FrmMembresiasPopup
         btnCancelar.FlatAppearance.MouseOverBackColor = Color.FromArgb(CByte(224), CByte(224), CByte(224))
         btnCancelar.FlatStyle = FlatStyle.Flat
         btnCancelar.Font = New Font("Segoe UI", 12F)
-        btnCancelar.Location = New Point(596, 387)
+        btnCancelar.Location = New Point(197, 290)
         btnCancelar.Name = "btnCancelar"
         btnCancelar.Size = New Size(82, 31)
         btnCancelar.TabIndex = 35
@@ -62,13 +63,14 @@ Partial Class FrmMembresiasPopup
         ' 
         ' btnGuardar
         ' 
+        btnGuardar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
         btnGuardar.BackColor = Color.FromArgb(CByte(123), CByte(179), CByte(75))
         btnGuardar.FlatAppearance.BorderColor = Color.FromArgb(CByte(123), CByte(179), CByte(75))
         btnGuardar.FlatAppearance.MouseDownBackColor = Color.White
         btnGuardar.FlatAppearance.MouseOverBackColor = Color.FromArgb(CByte(224), CByte(224), CByte(224))
         btnGuardar.FlatStyle = FlatStyle.Flat
         btnGuardar.Font = New Font("Segoe UI", 12F)
-        btnGuardar.Location = New Point(287, 387)
+        btnGuardar.Location = New Point(12, 290)
         btnGuardar.Name = "btnGuardar"
         btnGuardar.Size = New Size(83, 31)
         btnGuardar.TabIndex = 34
@@ -80,7 +82,7 @@ Partial Class FrmMembresiasPopup
         Label2.AutoSize = True
         Label2.Font = New Font("Segoe UI", 12F)
         Label2.ForeColor = Color.White
-        Label2.Location = New Point(46, 6)
+        Label2.Location = New Point(12, 23)
         Label2.Name = "Label2"
         Label2.Size = New Size(60, 21)
         Label2.TabIndex = 26
@@ -115,7 +117,7 @@ Partial Class FrmMembresiasPopup
         dgvMiembro.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle1
         dgvMiembro.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         dgvMiembro.GridColor = Color.FromArgb(CByte(5), CByte(18), CByte(26))
-        dgvMiembro.Location = New Point(12, 70)
+        dgvMiembro.Location = New Point(12, 59)
         dgvMiembro.MultiSelect = False
         dgvMiembro.Name = "dgvMiembro"
         dgvMiembro.ReadOnly = True
@@ -128,7 +130,7 @@ Partial Class FrmMembresiasPopup
         DataGridViewCellStyle2.WrapMode = DataGridViewTriState.True
         dgvMiembro.RowHeadersDefaultCellStyle = DataGridViewCellStyle2
         dgvMiembro.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-        dgvMiembro.Size = New Size(916, 110)
+        dgvMiembro.Size = New Size(1007, 96)
         dgvMiembro.TabIndex = 36
         ' 
         ' dgvPlan
@@ -149,7 +151,8 @@ Partial Class FrmMembresiasPopup
         dgvPlan.ColumnHeadersDefaultCellStyle = DataGridViewCellStyle3
         dgvPlan.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         dgvPlan.GridColor = Color.FromArgb(CByte(5), CByte(18), CByte(26))
-        dgvPlan.Location = New Point(12, 46)
+        dgvPlan.Location = New Point(12, 63)
+        dgvPlan.MultiSelect = False
         dgvPlan.Name = "dgvPlan"
         dgvPlan.ReadOnly = True
         DataGridViewCellStyle4.Alignment = DataGridViewContentAlignment.MiddleLeft
@@ -161,7 +164,7 @@ Partial Class FrmMembresiasPopup
         DataGridViewCellStyle4.WrapMode = DataGridViewTriState.True
         dgvPlan.RowHeadersDefaultCellStyle = DataGridViewCellStyle4
         dgvPlan.SelectionMode = DataGridViewSelectionMode.FullRowSelect
-        dgvPlan.Size = New Size(916, 108)
+        dgvPlan.Size = New Size(1007, 209)
         dgvPlan.TabIndex = 37
         ' 
         ' cbOpcionBuscarMiembro
@@ -177,7 +180,7 @@ Partial Class FrmMembresiasPopup
         ' tbBuscarMiembro
         ' 
         tbBuscarMiembro.Font = New Font("Segoe UI", 12F)
-        tbBuscarMiembro.Location = New Point(125, 13)
+        tbBuscarMiembro.Location = New Point(112, 13)
         tbBuscarMiembro.Name = "tbBuscarMiembro"
         tbBuscarMiembro.Size = New Size(619, 29)
         tbBuscarMiembro.TabIndex = 38
@@ -185,7 +188,7 @@ Partial Class FrmMembresiasPopup
         ' tbBuscarPlan
         ' 
         tbBuscarPlan.Font = New Font("Segoe UI", 12F)
-        tbBuscarPlan.Location = New Point(125, 6)
+        tbBuscarPlan.Location = New Point(112, 20)
         tbBuscarPlan.Name = "tbBuscarPlan"
         tbBuscarPlan.Size = New Size(619, 29)
         tbBuscarPlan.TabIndex = 40
@@ -195,33 +198,35 @@ Partial Class FrmMembresiasPopup
         cbBuscarOpcionPlan.Font = New Font("Segoe UI", 12F)
         cbBuscarOpcionPlan.FormattingEnabled = True
         cbBuscarOpcionPlan.Items.AddRange(New Object() {"Nombre"})
-        cbBuscarOpcionPlan.Location = New Point(773, 6)
+        cbBuscarOpcionPlan.Location = New Point(773, 20)
         cbBuscarOpcionPlan.Name = "cbBuscarOpcionPlan"
         cbBuscarOpcionPlan.Size = New Size(155, 29)
         cbBuscarOpcionPlan.TabIndex = 41
         ' 
         ' Panel1
         ' 
+        Panel1.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
         Panel1.Controls.Add(dgvMiembro)
         Panel1.Controls.Add(Label1)
         Panel1.Controls.Add(tbBuscarMiembro)
         Panel1.Controls.Add(cbOpcionBuscarMiembro)
-        Panel1.Dock = DockStyle.Top
         Panel1.Location = New Point(0, 0)
         Panel1.Name = "Panel1"
-        Panel1.Size = New Size(952, 208)
+        Panel1.Size = New Size(1036, 172)
         Panel1.TabIndex = 42
         ' 
         ' Panel2
         ' 
+        Panel2.Anchor = AnchorStyles.Top Or AnchorStyles.Bottom Or AnchorStyles.Left Or AnchorStyles.Right
         Panel2.Controls.Add(dgvPlan)
         Panel2.Controls.Add(tbBuscarPlan)
+        Panel2.Controls.Add(btnGuardar)
+        Panel2.Controls.Add(btnCancelar)
         Panel2.Controls.Add(cbBuscarOpcionPlan)
         Panel2.Controls.Add(Label2)
-        Panel2.Dock = DockStyle.Top
-        Panel2.Location = New Point(0, 208)
+        Panel2.Location = New Point(0, 178)
         Panel2.Name = "Panel2"
-        Panel2.Size = New Size(952, 162)
+        Panel2.Size = New Size(1033, 333)
         Panel2.TabIndex = 43
         ' 
         ' FrmMembresiasPopup
@@ -229,14 +234,11 @@ Partial Class FrmMembresiasPopup
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         BackColor = Color.FromArgb(CByte(5), CByte(18), CByte(26))
-        ClientSize = New Size(952, 450)
+        ClientSize = New Size(1031, 510)
         Controls.Add(Panel2)
         Controls.Add(Panel1)
-        Controls.Add(btnCancelar)
-        Controls.Add(btnGuardar)
         Name = "FrmMembresiasPopup"
         Text = "FrmMembresiasPopup"
-        WindowState = FormWindowState.Maximized
         CType(dgvMiembro, ComponentModel.ISupportInitialize).EndInit()
         CType(dgvPlan, ComponentModel.ISupportInitialize).EndInit()
         Panel1.ResumeLayout(False)

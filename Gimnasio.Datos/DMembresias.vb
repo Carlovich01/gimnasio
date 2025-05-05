@@ -7,49 +7,51 @@ Public Class DMembresias
     Public Function Listar() As DataTable
         Try
             Using conexion As New MySqlConnection(connectionString)
-                ' Consulta con uniones para obtener datos de membresías, miembros y planes
-                Dim query As String = "
-                SELECT 
-                    mm.id_membresia,
-                    mm.id_miembro,
-                    mm.id_plan,
-                    m.dni AS dni_miembro,
-                    m.apellido AS apellido_miembro,
-                    m.nombre AS nombre_miembro,
-                    p.nombre_plan AS nombre_plan,
-                    p.precio AS precio_plan,
-                    p.duracion_dias AS duracion_dias_plan,
-                    mm.fecha_inicio,
-                    mm.fecha_fin,
-                    mm.estado_membresia,
-                    mm.fecha_registro,
-                    mm.ultima_modificacion
-                FROM 
-                    membresias_miembro mm
-                INNER JOIN 
-                    miembros m ON mm.id_miembro = m.id_miembro
-                INNER JOIN 
-                    planes_membresia p ON mm.id_plan = p.id_plan
-            "
+                conexion.Open()
+                Dim actualizarQuery As String = "
+                     UPDATE membresias_miembro
+                     SET estado_membresia = 'Inactiva'
+                     WHERE estado_membresia = 'Activa' AND fecha_fin < CURDATE()"
+                Using comandoActualizar As New MySqlCommand(actualizarQuery, conexion)
+                    comandoActualizar.ExecuteNonQuery()
+                End Using
+
+                Dim query As String = "SELECT * FROM vista_membresias"
                 Dim adapter As New MySqlDataAdapter(query, conexion)
                 Dim tabla As New DataTable()
                 adapter.Fill(tabla)
                 Return tabla
             End Using
         Catch ex As Exception
-            Throw New Exception("Error al listar las membresías: " & ex.Message)
+            Throw New Exception(ex.Message)
         End Try
     End Function
 
 
-    Public Sub Insertar(idMiembro As Integer, idPlan As Integer, membresia As Membresias)
+    Public Sub Insertar(membresia As Membresias)
         Try
             Using conexion As New MySqlConnection(connectionString)
                 conexion.Open()
-                Dim query As String = "INSERT INTO membresias_miembro (id_miembro,id_plan,fecha_inicio,fecha_fin) VALUES (@idmi,@idpla,@in,@fin)"
+
+                Dim verificarQuery As String = "
+                SELECT COUNT(*) 
+                FROM membresias_miembro 
+                WHERE id_miembro = @idMiembro 
+                  AND id_plan = @idPlan "
+                Using verificarComando As New MySqlCommand(verificarQuery, conexion)
+                    verificarComando.Parameters.AddWithValue("@idMiembro", membresia.IdMiembro)
+                    verificarComando.Parameters.AddWithValue("@idPlan", membresia.IdPlan)
+                    Dim existe As Integer = Convert.ToInt32(verificarComando.ExecuteScalar())
+
+                    If existe > 0 Then
+                        Throw New Exception("El usuario ya tiene una membresía activa o pendiente de pago para este plan.")
+                    End If
+                End Using
+
+                Dim query As String = "INSERT INTO membresias_miembro (id_miembro, id_plan, fecha_inicio, fecha_fin) VALUES (@idmi, @idpla, @in, @fin)"
                 Using comando As New MySqlCommand(query, conexion)
-                    comando.Parameters.AddWithValue("@idmi", idMiembro)
-                    comando.Parameters.AddWithValue("@idpla", idPlan)
+                    comando.Parameters.AddWithValue("@idmi", membresia.IdMiembro)
+                    comando.Parameters.AddWithValue("@idpla", membresia.IdPlan)
                     comando.Parameters.AddWithValue("@in", membresia.FechaInicio)
                     comando.Parameters.AddWithValue("@fin", membresia.FechaFin)
                     comando.ExecuteNonQuery()
@@ -60,17 +62,36 @@ Public Class DMembresias
         End Try
     End Sub
 
-    Public Sub Actualizar(miembro As Miembros, plan As Planes, membresia As Membresias)
+    Public Function ObtenerIdMembresia(membresia As Membresias) As Integer
         Try
             Using conexion As New MySqlConnection(connectionString)
                 conexion.Open()
-                Dim query As String = "UPDATE membresias_miembro SET estado_membresia=@est, fecha_fin=@fin WHERE id_miembro = @id AND id_plan = @idpla"
-
+                Dim query As String = "SELECT id_membresia FROM membresias_miembro WHERE id_miembro = @idmi AND id_plan = @idpla"
                 Using comando As New MySqlCommand(query, conexion)
-                    comando.Parameters.AddWithValue("@fin", membresia.FechaFin)
-                    comando.Parameters.AddWithValue("@est", membresia.EstadoMembresia)
-                    comando.Parameters.AddWithValue("@id", miembro.IdMiembro)
-                    comando.Parameters.AddWithValue("@idpla", plan.IdPlan)
+                    comando.Parameters.AddWithValue("@idmi", membresia.IdMiembro)
+                    comando.Parameters.AddWithValue("@idpla", membresia.IdPlan)
+                    Dim resultado = comando.ExecuteScalar()
+                    Return If(resultado IsNot Nothing, Convert.ToInt32(resultado), 0)
+                End Using
+            End Using
+        Catch ex As Exception
+            Throw New Exception(ex.Message)
+        End Try
+    End Function
+
+    Public Sub ActualizarEstadoYFechas(membresia As Membresias)
+        Try
+            Using conexion As New MySqlConnection(connectionString)
+                conexion.Open()
+                Dim query As String = "
+                UPDATE membresias_miembro
+                SET estado_membresia = @estado, fecha_inicio = @fechaInicio, fecha_fin = @fechaFin
+                WHERE id_membresia = @idMembresia"
+                Using comando As New MySqlCommand(query, conexion)
+                    comando.Parameters.AddWithValue("@estado", membresia.EstadoMembresia)
+                    comando.Parameters.AddWithValue("@fechaInicio", membresia.FechaInicio)
+                    comando.Parameters.AddWithValue("@fechaFin", membresia.FechaFin)
+                    comando.Parameters.AddWithValue("@idMembresia", membresia.IdMembresia)
                     comando.ExecuteNonQuery()
                 End Using
             End Using
@@ -79,14 +100,15 @@ Public Class DMembresias
         End Try
     End Sub
 
-    Public Sub Desactivar(idMiembro As Integer, idPlan As Integer)
+    Public Sub ActualizarEstadosVencidos()
         Try
             Using conexion As New MySqlConnection(connectionString)
                 conexion.Open()
-                Dim query As String = "UPDATE membresias_miembro SET estado = 'Inactiva' WHERE id_miembro = @id AND id_plan=@idpla"
+                Dim query As String = "
+                UPDATE membresias_miembro
+                SET estado_membresia = 'Inactiva'
+                WHERE estado_membresia = 'Activa' AND fecha_fin < CURDATE()"
                 Using comando As New MySqlCommand(query, conexion)
-                    comando.Parameters.AddWithValue("@id", idMiembro)
-                    comando.Parameters.AddWithValue("@idpla", idPlan)
                     comando.ExecuteNonQuery()
                 End Using
             End Using
@@ -95,4 +117,70 @@ Public Class DMembresias
         End Try
     End Sub
 
+
+    Public Function ObtenerDuracionPorMembresia(idMembresia As Integer) As Integer
+        Try
+            Using conexion As New MySqlConnection(connectionString)
+                conexion.Open()
+                Dim query As String = "
+                SELECT p.duracion_dias
+                FROM membresias_miembro mm
+                INNER JOIN planes_membresia p ON mm.id_plan = p.id_plan
+                WHERE mm.id_membresia = @idMembresia"
+                Using comando As New MySqlCommand(query, conexion)
+                    comando.Parameters.AddWithValue("@idMembresia", idMembresia)
+                    Return Convert.ToInt32(comando.ExecuteScalar())
+                End Using
+
+            End Using
+        Catch ex As Exception
+            Throw New Exception(ex.Message)
+        End Try
+    End Function
+
+    Public Function BuscarPorDni(dni As String) As DataTable
+        Try
+            Using conexion As New MySqlConnection(connectionString)
+                Dim query As String = "SELECT * FROM vista_membresias WHERE dni_miembro LIKE @dni"
+                Dim adapter As New MySqlDataAdapter(query, conexion)
+                adapter.SelectCommand.Parameters.AddWithValue("@dni", "%" & dni & "%")
+                Dim tabla As New DataTable()
+                adapter.Fill(tabla)
+                Return tabla
+            End Using
+        Catch ex As Exception
+            Throw New Exception(ex.Message)
+        End Try
+    End Function
+
+    Public Function BuscarPorNombrePlan(nombrePlan As String) As DataTable
+        Try
+            Using conexion As New MySqlConnection(connectionString)
+                Dim query As String = "SELECT * FROM vista_membresias WHERE nombre_plan LIKE @nombrePlan"
+                Dim adapter As New MySqlDataAdapter(query, conexion)
+                adapter.SelectCommand.Parameters.AddWithValue("@nombrePlan", "%" & nombrePlan & "%")
+                Dim tabla As New DataTable()
+                adapter.Fill(tabla)
+                Return tabla
+            End Using
+        Catch ex As Exception
+            Throw New Exception(ex.Message)
+        End Try
+    End Function
+
+
+    Public Function BuscarPorEstado(estado As String) As DataTable
+        Try
+            Using conexion As New MySqlConnection(connectionString)
+                Dim query As String = "SELECT * FROM vista_membresias WHERE estado_membresia = @estado"
+                Dim adapter As New MySqlDataAdapter(query, conexion)
+                adapter.SelectCommand.Parameters.AddWithValue("@estado", estado)
+                Dim tabla As New DataTable()
+                adapter.Fill(tabla)
+                Return tabla
+            End Using
+        Catch ex As Exception
+            Throw New Exception(ex.Message)
+        End Try
+    End Function
 End Class

@@ -26,12 +26,10 @@ Partial Class FrmMembresias
         Dim DataGridViewCellStyle2 As DataGridViewCellStyle = New DataGridViewCellStyle()
         cbOpcionBuscar = New ComboBox()
         lblTotal = New Label()
-        btnActualizar = New Button()
-        btnDesactivar = New Button()
-        btnActivar = New Button()
         dgvListado = New DataGridView()
         tbBuscar = New TextBox()
         btnInsertar = New Button()
+        BtnPagar = New Button()
         CType(dgvListado, ComponentModel.ISupportInitialize).BeginInit()
         SuspendLayout()
         ' 
@@ -39,7 +37,7 @@ Partial Class FrmMembresias
         ' 
         cbOpcionBuscar.Font = New Font("Segoe UI", 12F)
         cbOpcionBuscar.FormattingEnabled = True
-        cbOpcionBuscar.Items.AddRange(New Object() {"Buscar por nombre", "Buscar por DNI"})
+        cbOpcionBuscar.Items.AddRange(New Object() {"Buscar por DNI", "Buscar por Plan ", "Membresias Activas", "Membresias Inactivas"})
         cbOpcionBuscar.Location = New Point(842, 13)
         cbOpcionBuscar.Name = "cbOpcionBuscar"
         cbOpcionBuscar.Size = New Size(155, 29)
@@ -57,39 +55,6 @@ Partial Class FrmMembresias
         lblTotal.Size = New Size(42, 21)
         lblTotal.TabIndex = 29
         lblTotal.Text = "Total"
-        ' 
-        ' btnActualizar
-        ' 
-        btnActualizar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
-        btnActualizar.Font = New Font("Segoe UI", 12F)
-        btnActualizar.Location = New Point(118, 687)
-        btnActualizar.Name = "btnActualizar"
-        btnActualizar.Size = New Size(92, 28)
-        btnActualizar.TabIndex = 26
-        btnActualizar.Text = "Actualizar"
-        btnActualizar.UseVisualStyleBackColor = True
-        ' 
-        ' btnDesactivar
-        ' 
-        btnDesactivar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
-        btnDesactivar.Font = New Font("Segoe UI", 12F)
-        btnDesactivar.Location = New Point(444, 687)
-        btnDesactivar.Name = "btnDesactivar"
-        btnDesactivar.Size = New Size(92, 28)
-        btnDesactivar.TabIndex = 27
-        btnDesactivar.Text = "Desactivar"
-        btnDesactivar.UseVisualStyleBackColor = True
-        ' 
-        ' btnActivar
-        ' 
-        btnActivar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
-        btnActivar.Font = New Font("Segoe UI", 12F)
-        btnActivar.Location = New Point(334, 687)
-        btnActivar.Name = "btnActivar"
-        btnActivar.Size = New Size(92, 28)
-        btnActivar.TabIndex = 28
-        btnActivar.Text = "Activar"
-        btnActivar.UseVisualStyleBackColor = True
         ' 
         ' dgvListado
         ' 
@@ -110,6 +75,7 @@ Partial Class FrmMembresias
         dgvListado.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize
         dgvListado.GridColor = Color.FromArgb(CByte(5), CByte(18), CByte(26))
         dgvListado.Location = New Point(11, 57)
+        dgvListado.MultiSelect = False
         dgvListado.Name = "dgvListado"
         dgvListado.ReadOnly = True
         DataGridViewCellStyle2.Alignment = DataGridViewContentAlignment.MiddleLeft
@@ -143,17 +109,26 @@ Partial Class FrmMembresias
         btnInsertar.Text = "Insertar"
         btnInsertar.UseVisualStyleBackColor = True
         ' 
+        ' BtnPagar
+        ' 
+        BtnPagar.Anchor = AnchorStyles.Bottom Or AnchorStyles.Left
+        BtnPagar.Font = New Font("Segoe UI", 12F)
+        BtnPagar.Location = New Point(125, 685)
+        BtnPagar.Name = "BtnPagar"
+        BtnPagar.Size = New Size(90, 31)
+        BtnPagar.TabIndex = 32
+        BtnPagar.Text = "Pagar"
+        BtnPagar.UseVisualStyleBackColor = True
+        ' 
         ' FrmMembresias
         ' 
         AutoScaleDimensions = New SizeF(7F, 15F)
         AutoScaleMode = AutoScaleMode.Font
         BackColor = Color.FromArgb(CByte(5), CByte(18), CByte(26))
         ClientSize = New Size(1008, 729)
+        Controls.Add(BtnPagar)
         Controls.Add(cbOpcionBuscar)
         Controls.Add(lblTotal)
-        Controls.Add(btnActualizar)
-        Controls.Add(btnDesactivar)
-        Controls.Add(btnActivar)
         Controls.Add(dgvListado)
         Controls.Add(tbBuscar)
         Controls.Add(btnInsertar)
@@ -166,10 +141,8 @@ Partial Class FrmMembresias
 
     Friend WithEvents cbOpcionBuscar As ComboBox
     Friend WithEvents lblTotal As Label
-    Friend WithEvents btnActualizar As Button
-    Friend WithEvents btnDesactivar As Button
-    Friend WithEvents btnActivar As Button
     Friend WithEvents dgvListado As DataGridView
     Friend WithEvents tbBuscar As TextBox
     Friend WithEvents btnInsertar As Button
+    Friend WithEvents BtnPagar As Button
 End Class

@@ -4,12 +4,10 @@
     Private _dni As String
     Private _nombre As String
     Private _apellido As String
-    Private _fechaNacimiento As Date
     Private _genero As String
     Private _telefono As String
     Private _email As String
     Private _fechaRegistro As Date
-    Private _estado As String
     Private _ultimaModificacion As Date
 
     ' Propiedades públicas con encapsulación
@@ -49,15 +47,6 @@
         End Set
     End Property
 
-    Public Property FechaNacimiento As Date
-        Get
-            Return _fechaNacimiento
-        End Get
-        Set(value As Date)
-            _fechaNacimiento = value
-        End Set
-    End Property
-
     Public Property Genero As String
         Get
             Return _genero
@@ -94,14 +83,6 @@
         End Set
     End Property
 
-    Public Property Estado As String
-        Get
-            Return _estado
-        End Get
-        Set(value As String)
-            _estado = value
-        End Set
-    End Property
 
     Public Property UltimaModificacion As Date
         Get

@@ -8,18 +8,15 @@ Public Class FrmMiembros
         Try
             ActualizarDataGridView()
 
-            'dgvListado.Columns(0).Visible = False 
-            dgvListado.Columns(0).HeaderText = "ID"
+            dgvListado.Columns(0).Visible = False
             dgvListado.Columns(1).HeaderText = "DNI"
             dgvListado.Columns(2).HeaderText = "Nombre"
             dgvListado.Columns(3).HeaderText = "Apellido"
-            dgvListado.Columns(4).HeaderText = "Fecha de Nacimiento"
-            dgvListado.Columns(5).HeaderText = "Género"
-            dgvListado.Columns(6).HeaderText = "Teléfono"
-            dgvListado.Columns(7).HeaderText = "Email"
-            dgvListado.Columns(8).HeaderText = "Fecha de Registro"
-            dgvListado.Columns(9).HeaderText = "Estado"
-            dgvListado.Columns(10).HeaderText = "Última Modificación"
+            dgvListado.Columns(4).HeaderText = "Género"
+            dgvListado.Columns(5).HeaderText = "Teléfono"
+            dgvListado.Columns(6).HeaderText = "Email"
+            dgvListado.Columns(7).HeaderText = "Fecha de Registro"
+            dgvListado.Columns(8).HeaderText = "Última Modificación"
 
             cbOpcionBuscar.SelectedIndex = 0
 
@@ -50,9 +47,11 @@ Public Class FrmMiembros
     Public Sub Insertar(nuevoMiembro As Miembros)
         Try
             nMiembros.Insertar(nuevoMiembro)
-            ' Actualizar el DataGridView
             ActualizarDataGridView()
             MsgBox("Miembro agregado exitosamente.", MsgBoxStyle.Information, "Exito")
+            Dim FrmMembresiasPopup As New FrmMembresiasPopup(nuevoMiembro)
+            FrmMembresiasPopup.ShowDialog()
+
         Catch ex As Exception
             MsgBox("Error al agregar el miembro: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
@@ -68,7 +67,6 @@ Public Class FrmMiembros
                 miembroPorActualizar.Dni = selectedRow.Cells("dni").Value.ToString()
                 miembroPorActualizar.Nombre = selectedRow.Cells("nombre").Value.ToString()
                 miembroPorActualizar.Apellido = selectedRow.Cells("apellido").Value.ToString()
-                miembroPorActualizar.FechaNacimiento = CDate(selectedRow.Cells("fecha_nacimiento").Value)
                 miembroPorActualizar.Genero = selectedRow.Cells("genero").Value.ToString()
                 miembroPorActualizar.Telefono = selectedRow.Cells("telefono").Value.ToString()
                 miembroPorActualizar.Email = selectedRow.Cells("email").Value.ToString()
@@ -95,50 +93,13 @@ Public Class FrmMiembros
         End Try
     End Sub
 
-    Private Sub btnActivar_Click(sender As Object, e As EventArgs) Handles btnActivar.Click
-        Try
-            If dgvListado.SelectedRows.Count > 0 Then
-                Dim selectedRow As DataGridViewRow = dgvListado.SelectedRows(0)
-                Dim idMiembro As Integer = CInt(selectedRow.Cells("id_miembro").Value)
-                nMiembros.Activar(idMiembro)
-                ActualizarDataGridView()
-                MsgBox("Miembro activado exitosamente.", MsgBoxStyle.Information, "Exito")
-            Else
-                MsgBox("Seleccione un Miembro para activar.", MsgBoxStyle.Exclamation, "Aviso")
-            End If
-        Catch ex As Exception
-            MsgBox("Error al activar el Miembro: " & ex.Message, MsgBoxStyle.Critical, "Error")
-        End Try
-    End Sub
-
-    Private Sub btnDesactivar_Click(sender As Object, e As EventArgs) Handles btnDesactivar.Click
-        Try
-            If dgvListado.SelectedRows.Count > 0 Then
-                Dim selectedRow As DataGridViewRow = dgvListado.SelectedRows(0)
-                Dim idMiembro As Integer = CInt(selectedRow.Cells("id_miembro").Value)
-                nMiembros.Desactivar(idMiembro)
-                ActualizarDataGridView()
-                MsgBox("Miembro desactivado exitosamente.", MsgBoxStyle.Information, "Exito")
-            Else
-                MsgBox("Seleccione un Miembro para desactivar.", MsgBoxStyle.Exclamation, "Aviso")
-            End If
-        Catch ex As Exception
-            MsgBox("Error al desactivar el Miembro: " & ex.Message, MsgBoxStyle.Critical, "Error")
-        End Try
-    End Sub
-
-
-
     Private Sub tbBuscar_TextChanged(sender As Object, e As EventArgs) Handles tbBuscar.TextChanged
         Try
-            ' Verificar si hay un elemento seleccionado en el ComboBox
             If cbOpcionBuscar.SelectedIndex = 0 Then
-                ' Buscar por nombre
                 Dim dvMiembro As DataTable = nMiembros.BuscarPorNombre(tbBuscar.Text)
                 dgvListado.DataSource = dvMiembro
                 lblTotal.Text = "Total: " & dgvListado.Rows.Count.ToString()
             ElseIf cbOpcionBuscar.SelectedIndex = 1 Then
-                ' Buscar por DNI
                 Dim dvMiembro As DataTable = nMiembros.BuscarPorDni(tbBuscar.Text)
                 dgvListado.DataSource = dvMiembro
                 lblTotal.Text = "Total: " & dgvListado.Rows.Count.ToString()
@@ -148,5 +109,24 @@ Public Class FrmMiembros
         End Try
     End Sub
 
+    Private Sub btnEliminar_Click(sender As Object, e As EventArgs) Handles btnEliminar.Click
+        Try
+            If dgvListado.SelectedRows.Count > 0 Then
+                Dim selectedRow As DataGridViewRow = dgvListado.SelectedRows(0)
+                Dim idMiembro As Integer = CInt(selectedRow.Cells("id_miembro").Value)
 
+                Dim confirmacion As DialogResult = MessageBox.Show("¿Está seguro de que desea eliminar este Miembro?", "Confirmar eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                If confirmacion = DialogResult.Yes Then
+                    nMiembros.Eliminar(idMiembro)
+
+                    ActualizarDataGridView()
+                    MsgBox("Miembro eliminado exitosamente.", MsgBoxStyle.Information, "Exito")
+                End If
+            Else
+                MsgBox("Seleccione un Miembro para eliminar.", MsgBoxStyle.Exclamation, "Aviso")
+            End If
+        Catch ex As Exception
+            MsgBox("Error al eliminar el Miembro: " & ex.Message, MsgBoxStyle.Critical, "Error")
+        End Try
+    End Sub
 End Class
