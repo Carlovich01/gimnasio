@@ -29,7 +29,7 @@ Public Class NPlanes
         End Try
     End Sub
 
-    Public Sub Eliminar(id As Integer)
+    Public Sub Eliminar(id As UInteger)
         Try
             dPlanes.Eliminar(id)
         Catch ex As Exception
@@ -46,7 +46,7 @@ Public Class NPlanes
         End Try
     End Function
 
-    Public Function BuscarPorDuracion(duracion As Integer) As DataTable
+    Public Function BuscarPorDuracion(duracion As UInteger) As DataTable
         Try
             Dim dvPlanes As DataTable = dPlanes.BuscarPorDuracion(duracion)
             Return dvPlanes

@@ -1,36 +1,36 @@
 ﻿Public Class Membresias
-    Private _idMembresia As Integer
-    Private _idMiembro As Integer
-    Private _idPlan As Integer
+    Private _idMembresia As UInteger
+    Private _idMiembro As UInteger
+    Private _idPlan As UInteger
     Private _fechaInicio As Date
     Private _fechaFin As Date
     Private _estadoMembresia As String
     Private _fechaRegistro As Date
     Private _ultimaModificacion As Date
 
-    Public Property IdMembresia As Integer
+    Public Property IdMembresia As UInteger
         Get
             Return _idMembresia
         End Get
-        Set(value As Integer)
+        Set(value As UInteger)
             _idMembresia = value
         End Set
     End Property
 
-    Public Property IdMiembro As Integer
+    Public Property IdMiembro As UInteger
         Get
             Return _idMiembro
         End Get
-        Set(value As Integer)
+        Set(value As UInteger)
             _idMiembro = value
         End Set
     End Property
 
-    Public Property IdPlan As Integer
+    Public Property IdPlan As UInteger
         Get
             Return _idPlan
         End Get
-        Set(value As Integer)
+        Set(value As UInteger)
             _idPlan = value
         End Set
     End Property

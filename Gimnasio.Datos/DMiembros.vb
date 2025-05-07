@@ -1,116 +1,63 @@
-﻿Imports MySql.Data.MySqlClient
+﻿Imports Gimnasio.Entidades
 Imports System.Data
-Imports Gimnasio.Entidades
-Imports Mysqlx.XDevAPI.Relational
 
 Public Class DMiembros
     Inherits ConexionBase
+
     Public Function Listar() As DataTable
-        Try
-            Using conexion As New MySqlConnection(connectionString)
-                Dim query As String = "SELECT * FROM miembros ORDER BY ultima_modificacion DESC"
-                Dim adapter As New MySqlDataAdapter(query, conexion)
-                Dim tabla As New DataTable()
-                adapter.Fill(tabla)
-                Return tabla
-            End Using
-        Catch ex As Exception
-            Throw New Exception(ex.Message)
-        End Try
+        Dim query As String = "SELECT * FROM miembros ORDER BY ultima_modificacion DESC"
+        Return ExecuteQuery(query, Nothing)
     End Function
 
     Public Sub Insertar(Obj As Miembros)
-        Try
-            Using conexion As New MySqlConnection(connectionString)
-                conexion.Open()
-                Dim query As String = "INSERT INTO miembros (dni, nombre, apellido, genero, telefono, email) VALUES (@dni, @nom, @ape, @gen, @tel, @ema)"
-                Using comando As New MySqlCommand(query, conexion)
-                    comando.Parameters.AddWithValue("@dni", Obj.Dni)
-                    comando.Parameters.AddWithValue("@nom", Obj.Nombre)
-                    comando.Parameters.AddWithValue("@ape", Obj.Apellido)
-                    comando.Parameters.AddWithValue("@gen", Obj.Genero)
-                    comando.Parameters.AddWithValue("@tel", Obj.Telefono)
-                    comando.Parameters.AddWithValue("@ema", Obj.Email)
-                    comando.ExecuteNonQuery()
-                End Using
-            End Using
-        Catch ex As Exception
-            Throw New Exception(ex.Message)
-        End Try
+        Dim query As String = "INSERT INTO miembros (dni, nombre, apellido, genero, telefono, email) VALUES (@dni, @nom, @ape, @gen, @tel, @ema)"
+        Dim parameters As New Dictionary(Of String, Object) From {
+            {"@dni", Obj.Dni},
+            {"@nom", Obj.Nombre},
+            {"@ape", Obj.Apellido},
+            {"@gen", Obj.Genero},
+            {"@tel", Obj.Telefono},
+            {"@ema", Obj.Email}
+        }
+        ExecuteNonQuery(query, parameters)
     End Sub
 
     Public Sub Actualizar(Obj As Miembros)
-        Try
-            Using conexion As New MySqlConnection(connectionString)
-                conexion.Open()
-                Dim query As String = "UPDATE miembros SET dni = @dni, nombre = @nom, apellido = @ape, genero = @gen, telefono = @tel, email = @ema WHERE id_miembro = @id"
-
-                Using comando As New MySqlCommand(query, conexion)
-                    comando.Parameters.AddWithValue("@dni", Obj.Dni)
-                    comando.Parameters.AddWithValue("@nom", Obj.Nombre)
-                    comando.Parameters.AddWithValue("@ape", Obj.Apellido)
-                    comando.Parameters.AddWithValue("@gen", Obj.Genero)
-                    comando.Parameters.AddWithValue("@tel", Obj.Telefono)
-                    comando.Parameters.AddWithValue("@ema", Obj.Email)
-                    comando.Parameters.AddWithValue("@id", Obj.IdMiembro)
-
-                    comando.ExecuteNonQuery()
-                End Using
-            End Using
-        Catch ex As Exception
-            Throw New Exception(ex.Message)
-        End Try
+        Dim query As String = "UPDATE miembros SET dni = @dni, nombre = @nom, apellido = @ape, genero = @gen, telefono = @tel, email = @ema WHERE id_miembro = @id"
+        Dim parameters As New Dictionary(Of String, Object) From {
+            {"@dni", Obj.Dni},
+            {"@nom", Obj.Nombre},
+            {"@ape", Obj.Apellido},
+            {"@gen", Obj.Genero},
+            {"@tel", Obj.Telefono},
+            {"@ema", Obj.Email},
+            {"@id", Obj.IdMiembro}
+        }
+        ExecuteNonQuery(query, parameters)
     End Sub
 
     Public Sub Eliminar(id As Integer)
-        Try
-            Using conexion As New MySqlConnection(connectionString)
-                conexion.Open()
-                Dim query As String = "DELETE FROM miembros WHERE id_miembro = @id"
-                Using comando As New MySqlCommand(query, conexion)
-                    comando.Parameters.AddWithValue("@id", id)
-                    comando.ExecuteNonQuery()
-                End Using
-            End Using
-        Catch ex As Exception
-            Throw New Exception(ex.Message)
-        End Try
+        Dim query As String = "DELETE FROM miembros WHERE id_miembro = @id"
+        Dim parameters As New Dictionary(Of String, Object) From {
+            {"@id", id}
+        }
+        ExecuteNonQuery(query, parameters)
     End Sub
 
     Public Function BuscarPorNombre(nombre As String) As DataTable
-        Try
-            Using conexion As New MySqlConnection(connectionString)
-                conexion.Open()
-                Dim query As String = "SELECT * FROM miembros WHERE nombre LIKE @nombre OR apellido LIKE @apellido ORDER BY ultima_modificacion DESC"
-                Using comando As New MySqlCommand(query, conexion)
-                    comando.Parameters.AddWithValue("@nombre", "%" & nombre & "%")
-                    comando.Parameters.AddWithValue("@apellido", "%" & nombre & "%")
-                    Dim adapter As New MySqlDataAdapter(comando)
-                    Dim tabla As New DataTable()
-                    adapter.Fill(tabla)
-                    Return tabla
-                End Using
-            End Using
-        Catch ex As Exception
-            Throw New Exception(ex.Message)
-        End Try
+        Dim query As String = "SELECT * FROM miembros WHERE nombre LIKE @nombre OR apellido LIKE @apellido ORDER BY ultima_modificacion DESC"
+        Dim parameters As New Dictionary(Of String, Object) From {
+            {"@nombre", "%" & nombre & "%"},
+            {"@apellido", "%" & nombre & "%"}
+        }
+        Return ExecuteQuery(query, parameters)
     End Function
 
     Public Function BuscarPorDni(dni As String) As DataTable
-        Try
-            Using conexion As New MySqlConnection(connectionString)
-                conexion.Open()
-                Dim query As String = "SELECT * FROM miembros WHERE dni = @dni"
-                Using comando As New MySqlCommand(query, conexion)
-                    comando.Parameters.AddWithValue("@dni", dni)
-                    Dim adapter As New MySqlDataAdapter(comando)
-                    Dim tabla As New DataTable()
-                    adapter.Fill(tabla)
-                    Return tabla
-                End Using
-            End Using
-        Catch ex As Exception
-            Throw New Exception(ex.Message)
-        End Try
+        Dim query As String = "SELECT * FROM miembros WHERE dni = @dni"
+        Dim parameters As New Dictionary(Of String, Object) From {
+            {"@dni", dni}
+        }
+        Return ExecuteQuery(query, parameters)
     End Function
 End Class

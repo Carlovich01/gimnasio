@@ -74,7 +74,7 @@ Public Class FrmMembresiasPopup
             End If
             NMembresias.Insertar(membresia)
             MsgBox("Membresía insertada correctamente.", MsgBoxStyle.Information, "Éxito")
-            Dim idMembresia As Integer
+            Dim idMembresia As UInteger
             idMembresia = NMembresias.ObtenerIdMembresia(membresia)
             Dim frmPagos As New FrmPagosPopup(idMembresia, precio)
             frmPagos.ShowDialog()

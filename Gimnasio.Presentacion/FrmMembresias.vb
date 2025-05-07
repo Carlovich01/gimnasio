@@ -60,7 +60,7 @@ Public Class FrmMembresias
         Try
             If dgvListado.SelectedRows.Count > 0 Then
                 Dim selectedRow As DataGridViewRow = dgvListado.SelectedRows(0)
-                Dim idMembresia As Integer = CInt(selectedRow.Cells("id_membresia").Value)
+                Dim idMembresia As UInteger = CInt(selectedRow.Cells("id_membresia").Value)
                 Dim precio As Decimal = Convert.ToDecimal(selectedRow.Cells("precio_plan").Value)
                 Dim estadoMembresia As String = selectedRow.Cells("estado_membresia").Value.ToString()
 

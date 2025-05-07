@@ -1,6 +1,5 @@
 ﻿Public Class Miembros
-    ' Propiedades privadas
-    Private _idMiembro As Integer
+    Private _idMiembro As UInteger
     Private _dni As String
     Private _nombre As String
     Private _apellido As String
@@ -10,12 +9,11 @@
     Private _fechaRegistro As Date
     Private _ultimaModificacion As Date
 
-    ' Propiedades públicas con encapsulación
-    Public Property IdMiembro As Integer
+    Public Property IdMiembro As UInteger
         Get
             Return _idMiembro
         End Get
-        Set(value As Integer)
+        Set(value As UInteger)
             _idMiembro = value
         End Set
     End Property

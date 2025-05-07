@@ -1,19 +1,18 @@
 ﻿Public Class Reclamos
-    ' Propiedades privadas
-    Private _idReclamos As Integer
+    Private _idReclamos As UInteger
     Private _tipo As String
     Private _descripcion As String
     Private _fechaEnvio As Date
     Private _estado As String
     Private _respuesta As String
     Private _fechaRespuesta As Date
-    Private _idMiembro As Integer?
+    Private _idMiembro As UInteger?
 
-    Public Property IdReclamos As Integer
+    Public Property IdReclamos As UInteger
         Get
             Return _idReclamos
         End Get
-        Set(value As Integer)
+        Set(value As UInteger)
             _idReclamos = value
         End Set
     End Property
@@ -71,11 +70,11 @@
         End Set
     End Property
 
-    Public Property IdMiembro As Integer?
+    Public Property IdMiembro As UInteger?
         Get
             Return _idMiembro
         End Get
-        Set(value As Integer?)
+        Set(value As UInteger?)
             _idMiembro = value
         End Set
     End Property

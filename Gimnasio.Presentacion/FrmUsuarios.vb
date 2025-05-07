@@ -96,7 +96,7 @@ Public Class FrmUsuarios
         Try
             If dgvListado.SelectedRows.Count > 0 Then
                 Dim selectedRow As DataGridViewRow = dgvListado.SelectedRows(0)
-                Dim idUsuario As Integer = CInt(selectedRow.Cells("id_usuario").Value)
+                Dim idUsuario As UInteger = CInt(selectedRow.Cells("id_usuario").Value)
 
                 Dim confirmacion As DialogResult = MessageBox.Show("¿Está seguro de que desea eliminar este Usuario?", "Confirmar eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                 If confirmacion = DialogResult.Yes Then

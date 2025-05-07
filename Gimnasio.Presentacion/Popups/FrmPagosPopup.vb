@@ -2,10 +2,10 @@
 Imports Gimnasio.Entidades
 
 Public Class FrmPagosPopup
-    Private idMembresia As Integer
+    Private idMembresia As UInteger
     Private monto As Decimal
 
-    Public Sub New(idMembresia As Integer, monto As Decimal)
+    Public Sub New(idMembresia As UInteger, monto As Decimal)
         InitializeComponent()
         Me.idMembresia = idMembresia
         Me.monto = monto

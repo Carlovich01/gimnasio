@@ -29,7 +29,7 @@ Public Class NMiembros
         End Try
     End Sub
 
-    Public Sub Eliminar(id As Integer)
+    Public Sub Eliminar(id As UInteger)
         Try
             dMiembros.Eliminar(id)
         Catch ex As Exception

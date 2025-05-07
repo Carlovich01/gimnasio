@@ -48,7 +48,7 @@ Public Class NUsuarios
     End Sub
 
 
-    Public Sub Eliminar(id As Integer)
+    Public Sub Eliminar(id As UInteger)
         Try
             dUsuarios.Eliminar(id)
         Catch ex As Exception

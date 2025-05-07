@@ -98,7 +98,7 @@ Public Class FrmReclamos
         Try
             If dgvListado.SelectedRows.Count > 0 Then
                 Dim selectedRow = dgvListado.SelectedRows(0)
-                Dim idReclamo As Integer = selectedRow.Cells("id_reclamos").Value
+                Dim idReclamo As UInteger = selectedRow.Cells("id_reclamos").Value
 
                 Dim confirmacion = MessageBox.Show("¿Está seguro de que desea eliminar este reclamo?", "Confirmar eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                 If confirmacion = DialogResult.Yes Then
@@ -146,7 +146,7 @@ Public Class FrmReclamos
         Try
             If dgvListado.SelectedRows.Count > 0 Then
                 Dim selectedRow = dgvListado.SelectedRows(0)
-                Dim idReclamo As Integer = CInt(selectedRow.Cells("id_reclamos").Value)
+                Dim idReclamo As UInteger = CInt(selectedRow.Cells("id_reclamos").Value)
                 Dim estadoActual As String = selectedRow.Cells("estado").Value.ToString().ToLower()
 
                 If estadoActual = "pendiente" Then

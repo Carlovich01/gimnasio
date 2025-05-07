@@ -19,7 +19,7 @@ Public Class NPagos
             dPagos.Insertar(pago)
 
             Dim dMembresia As New DMembresias()
-            Dim duracionDias As Integer = dMembresia.ObtenerDuracionPorMembresia(pago.IdMembresia)
+            Dim duracionDias As UInteger = dMembresia.ObtenerDuracionPorMembresia(pago.IdMembresia)
 
 
             Dim membresia As New Membresias()

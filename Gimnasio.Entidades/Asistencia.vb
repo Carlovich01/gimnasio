@@ -1,6 +1,6 @@
 ﻿Public Class Asistencia
     Private _idAsistencia As ULong
-    Private _idMiembro As UInteger
+    Private _idMiembro As UInteger?
     Private _fechaHoraCheckin As DateTime
     Private _resultado As String
     Private _idMembresiaValida As UInteger?
@@ -14,11 +14,11 @@
         End Set
     End Property
 
-    Public Property IdMiembro As UInteger
+    Public Property IdMiembro As UInteger?
         Get
             Return _idMiembro
         End Get
-        Set(value As UInteger)
+        Set(value As UInteger?)
             _idMiembro = value
         End Set
     End Property

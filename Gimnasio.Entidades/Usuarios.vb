@@ -1,18 +1,18 @@
 ﻿Public Class Usuarios
-    Private _idUsuario As Integer
+    Private _idUsuario As UInteger
     Private _username As String
     Private _passwordHash As String
     Private _nombreCompleto As String
     Private _email As String
-    Private _idRol As Integer
+    Private _idRol As UInteger
     Private _fechaCreacion As DateTime
     Private _ultimaModificacion As DateTime
 
-    Public Property IdUsuario As Integer
+    Public Property IdUsuario As UInteger
         Get
             Return _idUsuario
         End Get
-        Set(value As Integer)
+        Set(value As UInteger)
             _idUsuario = value
         End Set
     End Property
@@ -53,11 +53,11 @@
         End Set
     End Property
 
-    Public Property IdRol As Integer
+    Public Property IdRol As UInteger
         Get
             Return _idRol
         End Get
-        Set(value As Integer)
+        Set(value As UInteger)
             _idRol = value
         End Set
     End Property

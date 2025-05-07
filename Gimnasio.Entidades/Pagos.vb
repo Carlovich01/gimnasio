@@ -1,36 +1,36 @@
 ﻿Public Class Pagos
-    Private _idPago As Integer
-    Private _idMembresia As Integer
-    Private _idUsuarioRegistro As Integer?
+    Private _idPago As UInteger
+    Private _idMembresia As UInteger
+    Private _idUsuarioRegistro As UInteger?
     Private _fechaPago As DateTime
     Private _montoPagado As Decimal
     Private _metodoPago As String
     Private _numeroComprobante As String
     Private _notas As String
 
-    Public Property IdPago As Integer
+    Public Property IdPago As UInteger
         Get
             Return _idPago
         End Get
-        Set(value As Integer)
+        Set(value As UInteger)
             _idPago = value
         End Set
     End Property
 
-    Public Property IdMembresia As Integer
+    Public Property IdMembresia As UInteger
         Get
             Return _idMembresia
         End Get
-        Set(value As Integer)
+        Set(value As UInteger)
             _idMembresia = value
         End Set
     End Property
 
-    Public Property IdUsuarioRegistro As Integer?
+    Public Property IdUsuarioRegistro As UInteger?
         Get
             Return _idUsuarioRegistro
         End Get
-        Set(value As Integer?)
+        Set(value As UInteger?)
             _idUsuarioRegistro = value
         End Set
     End Property

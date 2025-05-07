@@ -113,7 +113,7 @@ Public Class FrmMiembros
         Try
             If dgvListado.SelectedRows.Count > 0 Then
                 Dim selectedRow As DataGridViewRow = dgvListado.SelectedRows(0)
-                Dim idMiembro As Integer = CInt(selectedRow.Cells("id_miembro").Value)
+                Dim idMiembro As UInteger = CInt(selectedRow.Cells("id_miembro").Value)
 
                 Dim confirmacion As DialogResult = MessageBox.Show("¿Está seguro de que desea eliminar este Miembro?", "Confirmar eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                 If confirmacion = DialogResult.Yes Then

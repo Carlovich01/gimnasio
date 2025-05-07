@@ -29,7 +29,7 @@ Public Class NReclamos
         End Try
     End Sub
 
-    Public Sub Eliminar(id As Integer)
+    Public Sub Eliminar(id As UInteger)
         Try
             dReclamos.Eliminar(id)
         Catch ex As Exception
@@ -37,7 +37,7 @@ Public Class NReclamos
         End Try
     End Sub
 
-    Public Sub EstadoResuelto(id As Integer)
+    Public Sub EstadoResuelto(id As UInteger)
         Try
             dReclamos.EstadoResuelto(id)
         Catch ex As Exception
@@ -45,7 +45,7 @@ Public Class NReclamos
         End Try
     End Sub
 
-    Public Sub EstadoPendiente(id As Integer)
+    Public Sub EstadoPendiente(id As UInteger)
         Try
             dReclamos.EstadoPendiente(id)
         Catch ex As Exception

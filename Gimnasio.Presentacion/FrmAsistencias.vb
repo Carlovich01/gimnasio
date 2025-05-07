@@ -35,11 +35,11 @@ Public Class FrmAsistencias
 
 
                         If Not membresias.Columns.Contains("dias_restantes") Then
-                            membresias.Columns.Add("dias_restantes", GetType(Integer))
+                            membresias.Columns.Add("dias_restantes", GetType(UInteger))
                         End If
                         For Each row As DataRow In membresias.Rows
                             Dim fechaFin As Date = Convert.ToDateTime(row("fecha_fin"))
-                            Dim diasRestantes As Integer = (fechaFin - DateTime.Now).Days
+                            Dim diasRestantes As UInteger = (fechaFin - DateTime.Now).Days
                             row("dias_restantes") = If(diasRestantes > 0, diasRestantes, 0)
                         Next
 

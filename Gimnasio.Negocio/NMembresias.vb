@@ -24,9 +24,9 @@ Public Class NMembresias
         End Try
     End Sub
 
-    Public Function ObtenerIdMembresia(membresia As Membresias) As Integer
+    Public Function ObtenerIdMembresia(membresia As Membresias) As UInteger
         Try
-            Dim idMembresia As Integer = dMembresias.ObtenerIdMembresia(membresia)
+            Dim idMembresia As UInteger = dMembresias.ObtenerIdMembresia(membresia)
             Return idMembresia
         Catch ex As Exception
             Throw New Exception("Error al obtener el ID de la membresía: " & ex.Message)
