@@ -1,10 +1,9 @@
 ﻿Imports System.Net
+Imports Gimnasio.Entidades
 Imports Gimnasio.Negocio
 
 Public Class FrmAsistencias
     Private nAsistencias As New NAsistencia()
-
-
 
     Private Sub FrmAsistencias_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Try
@@ -25,46 +24,44 @@ Public Class FrmAsistencias
                         dgvListado.Visible = True
 
                         Dim nMembresias As New NMembresias()
-                        Dim membresias As DataTable = nMembresias.BuscarPorDni(dni)
+                        Dim membresias As List(Of Membresias) = nMembresias.ListarPorDni(dni)
 
-                        Dim nombreMiembro As String = membresias.Rows(0)("nombre_miembro").ToString()
+                        If membresias.Count = 0 Then
+                            labelResultado.Text = "No se encontraron membresías asociadas al DNI."
+                            Return
+                        End If
+                        Dim nmiembro As New NMiembros()
+                        Dim nombreMiembro As String = nmiembro.ObtenerPorDni(dni).Nombre
 
                         labelResultado.Text = If(resultado = "Exitoso",
                                              $"¡Ingreso Exitoso. Bienvenido {nombreMiembro}! El estado de sus planes actualmente es:",
                                              $"Ingreso Erróneo. Posee membresía/s vencidas: {nombreMiembro}. El estado de sus planes actualmente es:")
 
-
-                        If Not membresias.Columns.Contains("dias_restantes") Then
-                            membresias.Columns.Add("dias_restantes", GetType(UInteger))
-                        End If
-                        For Each row As DataRow In membresias.Rows
-                            Dim fechaFin As Date = Convert.ToDateTime(row("fecha_fin"))
-                            Dim diasRestantes As UInteger = (fechaFin - DateTime.Now).Days
-                            row("dias_restantes") = If(diasRestantes > 0, diasRestantes, 0)
+                        ' Agregar columna de días restantes
+                        For Each membresia In membresias
+                            Dim diasRestantes As UInteger = If((membresia.FechaFin - DateTime.Now).Days > 0, (membresia.FechaFin - DateTime.Now).Days, 0)
+                            membresia.DiasRestantes = diasRestantes
                         Next
 
-
-
-
+                        ' Configurar DataGridView
                         dgvListado.DataSource = membresias
-
                         dgvListado.DefaultCellStyle.ForeColor = Color.Black
                         dgvListado.DefaultCellStyle.BackColor = Color.White
-                        dgvListado.Columns(0).Visible = False
-                        dgvListado.Columns(1).Visible = False
-                        dgvListado.Columns(2).Visible = False
-                        dgvListado.Columns(3).HeaderText = "DNI"
-                        dgvListado.Columns(4).HeaderText = "APELLIDO"
-                        dgvListado.Columns(5).HeaderText = "NOMBRE"
-                        dgvListado.Columns(6).HeaderText = "PLAN"
-                        dgvListado.Columns(7).Visible = False
-                        dgvListado.Columns(8).HeaderText = "DURACION"
-                        dgvListado.Columns(9).HeaderText = "FECHA INICIO"
-                        dgvListado.Columns(10).HeaderText = "FECHA FIN"
-                        dgvListado.Columns(11).HeaderText = "ESTADO"
-                        dgvListado.Columns(12).Visible = False
-                        dgvListado.Columns(13).Visible = False
-                        dgvListado.Columns(14).HeaderText = "DIAS RESTANTES"
+                        dgvListado.Columns("IdMembresia").Visible = False
+                        dgvListado.Columns("IdMiembro").Visible = False
+                        dgvListado.Columns("IdPlan").Visible = False
+                        dgvListado.Columns("DniMiembro").HeaderText = "DNI"
+                        dgvListado.Columns("ApellidoMiembro").HeaderText = "APELLIDO"
+                        dgvListado.Columns("NombreMiembro").HeaderText = "NOMBRE"
+                        dgvListado.Columns("NombrePlan").HeaderText = "PLAN"
+                        dgvListado.Columns("PrecioPlan").Visible = False
+                        dgvListado.Columns("DuracionDiasPlan").HeaderText = "DURACION"
+                        dgvListado.Columns("FechaInicio").HeaderText = "FECHA INICIO"
+                        dgvListado.Columns("FechaFin").HeaderText = "FECHA FIN"
+                        dgvListado.Columns("EstadoMembresia").HeaderText = "ESTADO"
+                        dgvListado.Columns("FechaRegistro").Visible = False
+                        dgvListado.Columns("UltimaModificacion").Visible = False
+                        dgvListado.Columns("DiasRestantes").HeaderText = "DIAS RESTANTES"
 
                         tbDNI.Text = ""
 

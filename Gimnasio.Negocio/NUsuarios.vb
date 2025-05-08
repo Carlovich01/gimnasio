@@ -19,9 +19,9 @@ Public Class NUsuarios
     End Function
 
 
-    Public Function Listar() As DataTable
+    Public Function Listar() As List(Of Usuarios)
         Try
-            Dim dvUsuarios As DataTable
+            Dim dvUsuarios As List(Of Usuarios)
             dvUsuarios = dUsuarios.Listar()
             Return dvUsuarios
         Catch ex As Exception
@@ -56,9 +56,9 @@ Public Class NUsuarios
         End Try
     End Sub
 
-    Public Function BuscarPorNombre(nombre As String) As DataTable
+    Public Function ListarPorNombre(nombre As String) As List(Of Usuarios)
         Try
-            Dim dvUsuarios As DataTable = dUsuarios.BuscarPorNombre(nombre)
+            Dim dvUsuarios As List(Of Usuarios) = dUsuarios.ListarPorNombre(nombre)
             Return dvUsuarios
         Catch ex As Exception
             Throw New Exception(ex.Message)

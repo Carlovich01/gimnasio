@@ -3,11 +3,32 @@ Imports System.Data
 Imports Gimnasio.Entidades
 
 Public Class DReclamos
-    Inherits ConexionBase
+    Inherits Conexion
 
-    Public Function Listar() As DataTable
+    Private Function MapearReclamos(tabla As DataTable) As List(Of Reclamos)
+        Dim listaReclamos As New List(Of Reclamos)()
+
+        For Each row As DataRow In tabla.Rows
+            Dim reclamo As New Reclamos() With {
+                .IdReclamos = Convert.ToInt32(row("id_reclamos")),
+                .Tipo = row("tipo").ToString(),
+                .Descripcion = row("descripcion").ToString(),
+                .FechaEnvio = Convert.ToDateTime(row("fecha_envio")),
+                .Estado = row("estado").ToString(),
+                .Respuesta = If(IsDBNull(row("respuesta")), Nothing, row("respuesta").ToString()),
+                .FechaRespuesta = If(IsDBNull(row("fecha_respuesta")), Nothing, Convert.ToDateTime(row("fecha_respuesta"))),
+                .IdMiembro = If(IsDBNull(row("id_miembro")), Nothing, Convert.ToInt32(row("id_miembro")))
+            }
+            listaReclamos.Add(reclamo)
+        Next
+
+        Return listaReclamos
+    End Function
+
+    Public Function Listar() As List(Of Reclamos)
         Dim query As String = "SELECT * FROM vista_reclamos"
-        Return ExecuteQuery(query, Nothing)
+        Dim resultado As DataTable = ExecuteQuery(query, Nothing)
+        Return MapearReclamos(resultado)
     End Function
 
     Public Sub Insertar(Obj As Reclamos)
@@ -66,11 +87,12 @@ Public Class DReclamos
         ExecuteNonQuery(query, parameters)
     End Sub
 
-    Public Function BuscarPorEstado(Estado As String) As DataTable
+    Public Function ListarPorEstado(Estado As String) As List(Of Reclamos)
         Dim query As String = "SELECT * FROM vista_reclamos WHERE estado = @estado"
         Dim parameters As New Dictionary(Of String, Object) From {
             {"@estado", Estado}
         }
-        Return ExecuteQuery(query, parameters)
+        Dim resultado As DataTable = ExecuteQuery(query, parameters)
+        Return MapearReclamos(resultado)
     End Function
 End Class

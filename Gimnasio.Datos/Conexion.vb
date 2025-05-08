@@ -1,11 +1,9 @@
-﻿' Proyecto: Datos
-Imports System.Data
+﻿Imports System.Data
 Imports MySql.Data.MySqlClient
 
-Public Class ConexionBase
+Public Class Conexion
     Private connectionString As String = "Server=localhost; Port=3307; Database=goatym2; Uid=root; Pwd=1234;"
 
-    ' Método genérico para ejecutar consultas SELECT y devolver un DataTable
     Public Function ExecuteQuery(query As String, parameters As Dictionary(Of String, Object)) As DataTable
         Try
             Using conexion As New MySqlConnection(connectionString)
@@ -23,11 +21,10 @@ Public Class ConexionBase
                 End Using
             End Using
         Catch ex As Exception
-            Throw New Exception(ex.Message)
+            Throw
         End Try
     End Function
 
-    ' Método genérico para ejecutar comandos INSERT, UPDATE, DELETE
     Public Sub ExecuteNonQuery(query As String, parameters As Dictionary(Of String, Object))
         Try
             Using conexion As New MySqlConnection(connectionString)
@@ -42,7 +39,7 @@ Public Class ConexionBase
                 End Using
             End Using
         Catch ex As Exception
-            Throw New Exception(ex.Message)
+            Throw
         End Try
     End Sub
 End Class

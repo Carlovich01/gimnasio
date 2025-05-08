@@ -2,10 +2,10 @@
     Private _idReclamos As UInteger
     Private _tipo As String
     Private _descripcion As String
-    Private _fechaEnvio As Date
+    Private _fechaEnvio As DateTime
     Private _estado As String
     Private _respuesta As String
-    Private _fechaRespuesta As Date
+    Private _fechaRespuesta As DateTime
     Private _idMiembro As UInteger?
 
     Public Property IdReclamos As UInteger

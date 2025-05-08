@@ -3,27 +3,44 @@ Imports System.Data
 Imports Gimnasio.Entidades
 
 Public Class DAsistencia
-    Inherits ConexionBase
+    Inherits Conexion
 
-    Public Function Listar() As DataTable
+    Private Function MapearAsistencias(tabla As DataTable) As List(Of Asistencia)
+        Dim listaAsistencias As New List(Of Asistencia)()
+
+        For Each row As DataRow In tabla.Rows
+            Dim asistencia As New Asistencia() With {
+                .IdAsistencia = Convert.ToUInt64(row("id_asistencia")),
+                .IdMiembro = If(IsDBNull(row("id_miembro")), Nothing, Convert.ToUInt32(row("id_miembro"))),
+                .FechaHoraCheckin = Convert.ToDateTime(row("fecha_hora_checkin")),
+                .Resultado = row("resultado").ToString(),
+                .IdMembresiaValida = If(IsDBNull(row("id_membresia_valida")), Nothing, Convert.ToUInt32(row("id_membresia_valida")))
+            }
+            listaAsistencias.Add(asistencia)
+        Next
+
+        Return listaAsistencias
+    End Function
+
+    Private Function MapearAsistencia(tabla As DataTable) As Asistencia
+        If tabla.Rows.Count = 0 Then
+            Return Nothing
+        End If
+
+        Dim row As DataRow = tabla.Rows(0)
+        Return New Asistencia() With {
+            .IdAsistencia = Convert.ToUInt64(row("id_asistencia")),
+            .IdMiembro = If(IsDBNull(row("id_miembro")), Nothing, Convert.ToUInt32(row("id_miembro"))),
+            .FechaHoraCheckin = Convert.ToDateTime(row("fecha_hora_checkin")),
+            .Resultado = row("resultado").ToString(),
+            .IdMembresiaValida = If(IsDBNull(row("id_membresia_valida")), Nothing, Convert.ToUInt32(row("id_membresia_valida")))
+        }
+    End Function
+
+    Public Function Listar() As List(Of Asistencia)
         Dim query As String = "SELECT * FROM vista_asistencia"
-        Return ExecuteQuery(query, Nothing)
-    End Function
-
-    Public Function ObtenerMiembroPorDNI(dni As String) As DataTable
-        Dim query As String = "SELECT * FROM miembros WHERE dni = @dni"
-        Dim parameters As New Dictionary(Of String, Object) From {
-            {"@dni", dni}
-        }
-        Return ExecuteQuery(query, parameters)
-    End Function
-
-    Public Function ValidarEstadoMembresia(idMiembro As UInteger) As DataTable
-        Dim query As String = "SELECT * FROM membresias_miembro WHERE id_miembro = @idMiembro ORDER BY fecha_fin DESC LIMIT 1"
-        Dim parameters As New Dictionary(Of String, Object) From {
-            {"@idMiembro", idMiembro}
-        }
-        Return ExecuteQuery(query, parameters)
+        Dim resultado As DataTable = ExecuteQuery(query, Nothing)
+        Return MapearAsistencias(resultado)
     End Function
 
     Public Sub RegistrarAsistencia(asistencia As Asistencia)
@@ -37,21 +54,23 @@ Public Class DAsistencia
         ExecuteNonQuery(query, parameters)
     End Sub
 
-    Public Function BuscarPorDNI(dni As String) As DataTable
+    Public Function ListarPorDni(dni As String) As List(Of Asistencia)
         Dim query As String = "SELECT * FROM vista_asistencia WHERE dni_miembro LIKE @dni"
         Dim parameters As New Dictionary(Of String, Object) From {
             {"@dni", "%" & dni & "%"}
         }
-        Return ExecuteQuery(query, parameters)
+        Dim resultado As DataTable = ExecuteQuery(query, parameters)
+        Return MapearAsistencias(resultado)
     End Function
 
-    Public Function BuscarPorFecha(fechaInicio As DateTime, fechaFin As DateTime) As DataTable
+    Public Function ListarPorFecha(fechaInicio As DateTime, fechaFin As DateTime) As List(Of Asistencia)
         Dim query As String = "SELECT * FROM vista_asistencia WHERE fecha_ingreso BETWEEN @fechaInicio AND @fechaFin"
         Dim parameters As New Dictionary(Of String, Object) From {
             {"@fechaInicio", fechaInicio},
             {"@fechaFin", fechaFin}
         }
-        Return ExecuteQuery(query, parameters)
+        Dim resultado As DataTable = ExecuteQuery(query, parameters)
+        Return MapearAsistencias(resultado)
     End Function
 End Class
 

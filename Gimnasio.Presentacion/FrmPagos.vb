@@ -8,65 +8,55 @@ Public Class FrmPagos
         Try
             ActualizarDataGridView()
 
-            dgvListado.Columns(0).Visible = False
-            dgvListado.Columns(1).Visible = False
-            dgvListado.Columns(2).Visible = False
-            dgvListado.Columns(0).HeaderText = "ID PAGO"
-            dgvListado.Columns(1).HeaderText = "ID MEMBRESIA"
-            dgvListado.Columns(2).HeaderText = "ID USUARIO REGISTRO"
-            dgvListado.Columns(3).HeaderText = "APELLIDO MIEMBRO"
-            dgvListado.Columns(4).HeaderText = "NOMBRE MIEMBRO"
-            dgvListado.Columns(5).HeaderText = "DNI MIEMBRO"
-            dgvListado.Columns(6).HeaderText = "NOMBRE PLAN"
-            dgvListado.Columns(7).HeaderText = "MONTO PAGADO"
-            dgvListado.Columns(8).HeaderText = "METODO PAGO"
-            dgvListado.Columns(9).HeaderText = "NUMERO COMPROBANTE"
-            dgvListado.Columns(10).HeaderText = "FECHA PAGO"
-            dgvListado.Columns(11).HeaderText = "ENCARGADO"
+            dgvListado.Columns("IdPago").Visible = False
+            dgvListado.Columns("IdMembresia").Visible = False
+            dgvListado.Columns("IdUsuarioRegistro").Visible = False
+            dgvListado.Columns("IdPago").HeaderText = "ID PAGO"
+            dgvListado.Columns("IdMembresia").HeaderText = "ID MEMBRESIA"
+            dgvListado.Columns("IdUsuarioRegistro").HeaderText = "ID USUARIO REGISTRO"
+            dgvListado.Columns("ApellidoMiembro").HeaderText = "APELLIDO MIEMBRO"
+            dgvListado.Columns("NombreMiembro").HeaderText = "NOMBRE MIEMBRO"
+            dgvListado.Columns("DniMiembro").HeaderText = "DNI MIEMBRO"
+            dgvListado.Columns("NombrePlan").HeaderText = "NOMBRE PLAN"
+            dgvListado.Columns("MontoPagado").HeaderText = "MONTO PAGADO"
+            dgvListado.Columns("MetodoPago").HeaderText = "METODO PAGO"
+            dgvListado.Columns("NumeroComprobante").HeaderText = "NUMERO COMPROBANTE"
+            dgvListado.Columns("FechaPago").HeaderText = "FECHA PAGO"
+            dgvListado.Columns("Encargado").HeaderText = "ENCARGADO"
             cbOpcionBuscar.SelectedIndex = 0
         Catch ex As Exception
-            MsgBox("Error al cargar las membresias: " & ex.Message, MsgBoxStyle.Critical, "Error")
+            MsgBox("Error al cargar los pagos: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
     End Sub
 
     Public Sub ActualizarDataGridView()
         Try
-            Dim dvMembresias As DataTable = nPagos.Listar()
-            dgvListado.DataSource = dvMembresias
-            lblTotal.Text = "Total Registros: " & dgvListado.Rows.Count.ToString()
-            Dim totalIngresos As Decimal = 0
-            For Each row As DataGridViewRow In dgvListado.Rows
-                totalIngresos += Convert.ToDecimal(row.Cells("monto").Value)
-            Next
+            Dim pagos As List(Of Pagos) = nPagos.Listar()
+            dgvListado.DataSource = pagos
+            lblTotal.Text = "Total Registros: " & pagos.Count.ToString()
 
-            lbIngresosTotales.Text = "Ingresos Totales: $" & totalIngresos.ToString()
-
+            Dim totalIngresos As Decimal = pagos.Sum(Function(p) p.MontoPagado)
+            lbIngresosTotales.Text = "Ingresos Totales: $" & totalIngresos.ToString("F2")
         Catch ex As Exception
-            MsgBox("Error al cargar las membresias: " & ex.Message, MsgBoxStyle.Critical, "Error")
+            MsgBox("Error al cargar los pagos: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
     End Sub
-
 
     Private Sub BtnBuscarFecha_Click(sender As Object, e As EventArgs) Handles BtnBuscarFecha.Click
         Try
             Dim fechaInicio = dtpFechaInicio.Value.Date
             Dim fechaFin = dtpFechaFin.Value.Date.AddDays(1).AddTicks(-1)
-            Dim dvPagos = nPagos.BuscarPorFecha(fechaInicio, fechaFin)
-            dgvListado.DataSource = dvPagos
+            Dim pagos As List(Of Pagos) = nPagos.ListarPorFecha(fechaInicio, fechaFin)
+            dgvListado.DataSource = pagos
 
-            lblTotal.Text = "Total Registros: " & dgvListado.Rows.Count.ToString
+            lblTotal.Text = "Total Registros: " & pagos.Count.ToString()
 
-            Dim totalIngresos As Decimal = 0
-            For Each row As DataGridViewRow In dgvListado.Rows
-                totalIngresos += Convert.ToDecimal(row.Cells("monto").Value)
-            Next
-
-            lbIngresosTotales.Text = "Ingresos Totales: $" & totalIngresos.ToString
+            Dim totalIngresos As Decimal = pagos.Sum(Function(p) p.MontoPagado)
+            lbIngresosTotales.Text = "Ingresos Totales: $" & totalIngresos.ToString("F2")
         Catch ex As Exception
             MsgBox("Error al buscar pagos por fecha: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
     End Sub
-
 
     Private Sub CbOpcionBuscar_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbOpcionBuscar.SelectedIndexChanged
         Try
@@ -78,13 +68,7 @@ Public Class FrmPagos
                     PanelFecha.Visible = True
                     PanelMonto.Visible = False
 
-                Case 1
-                    tbBuscar.Visible = True
-                    tbBuscar.Enabled = True
-                    PanelFecha.Visible = False
-                    PanelMonto.Visible = False
-
-                Case 2
+                Case 1, 2
                     tbBuscar.Visible = True
                     tbBuscar.Enabled = True
                     PanelFecha.Visible = False
@@ -96,51 +80,39 @@ Public Class FrmPagos
                     PanelFecha.Visible = False
                     PanelMonto.Visible = True
 
-
-                Case 4, 5, 6, 7, 8, 9, 10
+                Case 4 To 10
                     tbBuscar.Visible = False
                     tbBuscar.Enabled = False
                     PanelFecha.Visible = False
                     PanelMonto.Visible = False
-                    Dim dvPagos As DataTable = nPagos.BuscarPorMetodoPago(cbOpcionBuscar.SelectedItem.ToString)
-                    dgvListado.DataSource = dvPagos
-                    lblTotal.Text = "Total Registros: " & dgvListado.Rows.Count.ToString()
-                    Dim totalIngresos As Decimal = 0
-                    For Each row As DataGridViewRow In dgvListado.Rows
-                        totalIngresos += Convert.ToDecimal(row.Cells("monto").Value)
-                    Next
-                    lbIngresosTotales.Text = "Ingresos Totales: $" & totalIngresos.ToString()
+                    Dim pagos As List(Of Pagos) = nPagos.ListarPorMetodoPago(cbOpcionBuscar.SelectedItem.ToString())
+                    dgvListado.DataSource = pagos
+                    lblTotal.Text = "Total Registros: " & pagos.Count.ToString()
+
+                    Dim totalIngresos As Decimal = pagos.Sum(Function(p) p.MontoPagado)
+                    lbIngresosTotales.Text = "Ingresos Totales: $" & totalIngresos.ToString("F2")
             End Select
         Catch ex As Exception
             MsgBox("Error al buscar pagos: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
-
-
-
     End Sub
 
     Private Sub tbBuscar_TextChanged(sender As Object, e As EventArgs) Handles tbBuscar.TextChanged
         Try
+            Dim pagos As List(Of Pagos) = Nothing
+
             Select Case cbOpcionBuscar.SelectedIndex
                 Case 1
-                    Dim dvPagos As DataTable = nPagos.BuscarPorDni(tbBuscar.Text)
-                    dgvListado.DataSource = dvPagos
-                    lblTotal.Text = "Total Registros: " & dgvListado.Rows.Count.ToString()
-                    Dim totalIngresos As Decimal = 0
-                    For Each row As DataGridViewRow In dgvListado.Rows
-                        totalIngresos += Convert.ToDecimal(row.Cells("monto").Value)
-                    Next
-                    lbIngresosTotales.Text = "Ingresos Totales: $" & totalIngresos.ToString()
+                    pagos = nPagos.ListarPorDni(tbBuscar.Text)
                 Case 2
-                    Dim dvPagos As DataTable = nPagos.BuscarPorNombrePlan(tbBuscar.Text)
-                    dgvListado.DataSource = dvPagos
-                    lblTotal.Text = "Total Registros: " & dgvListado.Rows.Count.ToString()
-                    Dim totalIngresos As Decimal = 0
-                    For Each row As DataGridViewRow In dgvListado.Rows
-                        totalIngresos += Convert.ToDecimal(row.Cells("monto").Value)
-                    Next
-                    lbIngresosTotales.Text = "Ingresos Totales: $" & totalIngresos.ToString()
+                    pagos = nPagos.ListarPorNombrePlan(tbBuscar.Text)
             End Select
+
+            dgvListado.DataSource = pagos
+            lblTotal.Text = "Total Registros: " & pagos.Count.ToString()
+
+            Dim totalIngresos As Decimal = pagos.Sum(Function(p) p.MontoPagado)
+            lbIngresosTotales.Text = "Ingresos Totales: $" & totalIngresos.ToString("F2")
         Catch ex As Exception
             MsgBox("Error al buscar pagos: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
@@ -148,18 +120,16 @@ Public Class FrmPagos
 
     Private Sub btnBuscarMonto_Click(sender As Object, e As EventArgs) Handles btnBuscarMonto.Click
         Try
-            Dim dvPagos As DataTable = nPagos.BuscarPorMontos(CDec(tbMontoInicial.Text), CDec(tbMontoFinal.Text))
-            dgvListado.DataSource = dvPagos
-            lblTotal.Text = "Total Registros: " & dgvListado.Rows.Count.ToString()
-            Dim totalIngresos As Decimal = 0
-            For Each row As DataGridViewRow In dgvListado.Rows
-                totalIngresos += Convert.ToDecimal(row.Cells("monto").Value)
-            Next
-            lbIngresosTotales.Text = "Ingresos Totales: $" & totalIngresos.ToString()
+            Dim montoInicial As Decimal = CDec(tbMontoInicial.Text)
+            Dim montoFinal As Decimal = CDec(tbMontoFinal.Text)
+            Dim pagos As List(Of Pagos) = nPagos.ListarPorMontos(montoInicial, montoFinal)
+            dgvListado.DataSource = pagos
+            lblTotal.Text = "Total Registros: " & pagos.Count.ToString()
+
+            Dim totalIngresos As Decimal = pagos.Sum(Function(p) p.MontoPagado)
+            lbIngresosTotales.Text = "Ingresos Totales: $" & totalIngresos.ToString("F2")
         Catch ex As Exception
             MsgBox("Error al buscar pagos por monto: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
     End Sub
-
-
 End Class

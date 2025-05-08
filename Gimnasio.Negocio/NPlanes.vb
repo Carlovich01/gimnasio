@@ -3,14 +3,12 @@ Imports Gimnasio.Datos
 Imports Gimnasio.Entidades
 Public Class NPlanes
     Private dPlanes As New DPlanes()
-    Public Function Listar() As DataTable
-        Dim dvPlanes As DataTable
+    Public Function Listar() As List(Of Planes)
         Try
-            dvPlanes = dPlanes.Listar()
+            Return dPlanes.Listar()
         Catch ex As Exception
             Throw New Exception(ex.Message)
         End Try
-        Return dvPlanes
     End Function
 
     Public Sub Insertar(Obj As Planes)
@@ -37,28 +35,25 @@ Public Class NPlanes
         End Try
     End Sub
 
-    Public Function BuscarPorNombre(nombre As String) As DataTable
+    Public Function ListarPorNombre(nombre As String) As List(Of Planes)
         Try
-            Dim dvPlanes As DataTable = dPlanes.BuscarPorNombre(nombre)
-            Return dvPlanes
+            Return dPlanes.ListarPorNombre(nombre)
         Catch ex As Exception
             Throw New Exception(ex.Message)
         End Try
     End Function
 
-    Public Function BuscarPorDuracion(duracion As UInteger) As DataTable
+    Public Function ListarPorDuracion(duracion As UInteger) As List(Of Planes)
         Try
-            Dim dvPlanes As DataTable = dPlanes.BuscarPorDuracion(duracion)
-            Return dvPlanes
+            Return dPlanes.ListarPorDuracion(duracion)
         Catch ex As Exception
             Throw New Exception(ex.Message)
         End Try
     End Function
 
-    Public Function BuscarPorPrecio(precio As Decimal) As DataTable
+    Public Function ListarPorPrecio(precio As Decimal) As List(Of Planes)
         Try
-            Dim dvPlanes As DataTable = dPlanes.BuscarPorPrecio(precio)
-            Return dvPlanes
+            Return dPlanes.ListarPorPrecio(precio)
         Catch ex As Exception
             Throw New Exception(ex.Message)
         End Try

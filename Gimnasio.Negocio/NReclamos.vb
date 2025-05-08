@@ -3,11 +3,9 @@ Imports Gimnasio.Datos
 Imports Gimnasio.Entidades
 Public Class NReclamos
     Private dReclamos As New DReclamos()
-    Public Function Listar() As DataTable
+    Public Function Listar() As List(Of Reclamos)
         Try
-            Dim dvDescripcion As DataTable
-            dvDescripcion = dReclamos.Listar()
-            Return dvDescripcion
+            Return dReclamos.Listar()
         Catch ex As Exception
             Throw New Exception(ex.Message)
         End Try
@@ -53,10 +51,9 @@ Public Class NReclamos
         End Try
     End Sub
 
-    Public Function BuscarPorEstado(estado As String) As DataTable
+    Public Function ListarPorEstado(estado As String) As List(Of Reclamos)
         Try
-            Dim dvEstado As DataTable = dReclamos.BuscarPorEstado(estado)
-            Return dvEstado
+            Return dReclamos.ListarPorEstado(estado)
         Catch ex As Exception
             Throw New Exception(ex.Message)
         End Try

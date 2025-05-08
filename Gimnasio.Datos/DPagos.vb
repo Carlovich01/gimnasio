@@ -3,11 +3,32 @@ Imports System.Data
 Imports Gimnasio.Entidades
 
 Public Class DPagos
-    Inherits ConexionBase
+    Inherits Conexion
 
-    Public Function Listar() As DataTable
+    Private Function MapearPagos(tabla As DataTable) As List(Of Pagos)
+        Dim listaPagos As New List(Of Pagos)()
+
+        For Each row As DataRow In tabla.Rows
+            Dim pago As New Pagos() With {
+                .IdPago = Convert.ToUInt32(row("id_pago")),
+                .IdMembresia = Convert.ToUInt32(row("id_membresia")),
+                .IdUsuarioRegistro = If(IsDBNull(row("id_usuario_registro")), Nothing, Convert.ToUInt32(row("id_usuario_registro"))),
+                .FechaPago = Convert.ToDateTime(row("fecha_pago")),
+                .MontoPagado = Convert.ToDecimal(row("monto")),
+                .MetodoPago = row("metodo").ToString(),
+                .NumeroComprobante = If(IsDBNull(row("comprobante")), Nothing, row("comprobante").ToString()),
+                .Notas = If(IsDBNull(row("notas")), Nothing, row("notas").ToString())
+            }
+            listaPagos.Add(pago)
+        Next
+
+        Return listaPagos
+    End Function
+
+    Public Function Listar() As List(Of Pagos)
         Dim query As String = "SELECT * FROM vista_pagos"
-        Return ExecuteQuery(query, Nothing)
+        Dim resultado As DataTable = ExecuteQuery(query, Nothing)
+        Return MapearPagos(resultado)
     End Function
 
     Public Sub Insertar(pago As Pagos)
@@ -22,41 +43,44 @@ Public Class DPagos
         }
         ExecuteNonQuery(query, parameters)
     End Sub
-
-    Public Function BuscarPorFecha(fechaInicio As DateTime, fechaFin As DateTime) As DataTable
+    Public Function ListarPorFechas(fechaInicio As DateTime, fechaFin As DateTime) As List(Of Pagos)
         Dim query As String = "SELECT * FROM vista_pagos WHERE fecha_pago BETWEEN @fechaInicio AND @fechaFin"
         Dim parameters As New Dictionary(Of String, Object) From {
             {"@fechaInicio", fechaInicio},
             {"@fechaFin", fechaFin}
         }
-        Return ExecuteQuery(query, parameters)
+        Dim resultado As DataTable = ExecuteQuery(query, parameters)
+        Return MapearPagos(resultado)
     End Function
 
-    Public Function BuscarPorDni(dni As String) As DataTable
+    Public Function ListarPorDni(dni As String) As List(Of Pagos)
         Dim query As String = "SELECT * FROM vista_pagos WHERE dni_miembro LIKE @dni"
         Dim parameters As New Dictionary(Of String, Object) From {
             {"@dni", "%" & dni & "%"}
         }
-        Return ExecuteQuery(query, parameters)
+        Dim resultado As DataTable = ExecuteQuery(query, parameters)
+        Return MapearPagos(resultado)
     End Function
 
-    Public Function BuscarPorNombrePlan(nombre As String) As DataTable
+    Public Function ListarPorNombrePlan(nombre As String) As List(Of Pagos)
         Dim query As String = "SELECT * FROM vista_pagos WHERE nombre_plan LIKE @nombre"
         Dim parameters As New Dictionary(Of String, Object) From {
             {"@nombre", "%" & nombre & "%"}
         }
-        Return ExecuteQuery(query, parameters)
+        Dim resultado As DataTable = ExecuteQuery(query, parameters)
+        Return MapearPagos(resultado)
     End Function
 
-    Public Function BuscarPorMetodoPago(metodoPago As String) As DataTable
+    Public Function ListarPorMetodoPago(metodoPago As String) As List(Of Pagos)
         Dim query As String = "SELECT * FROM vista_pagos WHERE metodo = @metodoPago"
         Dim parameters As New Dictionary(Of String, Object) From {
             {"@metodoPago", metodoPago}
         }
-        Return ExecuteQuery(query, parameters)
+        Dim resultado As DataTable = ExecuteQuery(query, parameters)
+        Return MapearPagos(resultado)
     End Function
 
-    Public Function BuscarPorMontos(montoMin As Decimal, montoMax As Decimal) As DataTable
+    Public Function ListarPorMontos(montoMin As Decimal, montoMax As Decimal) As List(Of Pagos)
         Dim query As String = "
             SELECT * 
             FROM vista_pagos
@@ -65,7 +89,8 @@ Public Class DPagos
             {"@montoMin", montoMin},
             {"@montoMax", montoMax}
         }
-        Return ExecuteQuery(query, parameters)
+        Dim resultado As DataTable = ExecuteQuery(query, parameters)
+        Return MapearPagos(resultado)
     End Function
 End Class
 

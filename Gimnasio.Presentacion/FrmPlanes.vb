@@ -1,5 +1,6 @@
 ﻿Imports Gimnasio.Negocio
 Imports Gimnasio.Entidades
+
 Public Class FrmPlanes
     Private nPlanes As New NPlanes()
 
@@ -19,13 +20,13 @@ Public Class FrmPlanes
         Try
             ActualizarDataGridView()
 
-            dgvListado.Columns(0).Visible = False
-            dgvListado.Columns(1).HeaderText = "Nombre del Plan"
-            dgvListado.Columns(2).HeaderText = "Descripción"
-            dgvListado.Columns(3).HeaderText = "Duración"
-            dgvListado.Columns(4).HeaderText = "Precio"
-            dgvListado.Columns(5).HeaderText = "Fecha de Creación"
-            dgvListado.Columns(6).HeaderText = "Última Modificación"
+            dgvListado.Columns("IdPlan").Visible = False
+            dgvListado.Columns("NombrePlan").HeaderText = "Nombre del Plan"
+            dgvListado.Columns("Descripcion").HeaderText = "Descripción"
+            dgvListado.Columns("DuracionDias").HeaderText = "Duración (días)"
+            dgvListado.Columns("Precio").HeaderText = "Precio"
+            dgvListado.Columns("FechaCreacion").HeaderText = "Fecha de Creación"
+            dgvListado.Columns("UltimaModificacion").HeaderText = "Última Modificación"
             cbOpcionBuscar.SelectedIndex = 0
         Catch ex As Exception
             MsgBox("Error al cargar los planes: " & ex.Message, MsgBoxStyle.Critical, "Error")
@@ -34,9 +35,9 @@ Public Class FrmPlanes
 
     Public Sub ActualizarDataGridView()
         Try
-            Dim dvPlanes As DataTable = nPlanes.Listar()
-            dgvListado.DataSource = dvPlanes
-            lblTotal.Text = "Total: " & dgvListado.Rows.Count.ToString()
+            Dim planes As List(Of Planes) = nPlanes.Listar()
+            dgvListado.DataSource = planes
+            lblTotal.Text = "Total: " & planes.Count.ToString()
         Catch ex As Exception
             MsgBox("Error al cargar los planes: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
@@ -55,23 +56,23 @@ Public Class FrmPlanes
         Try
             nPlanes.Insertar(nuevoPlan)
             ActualizarDataGridView()
-            MsgBox("Plan agregado exitosamente.", MsgBoxStyle.Information, "Exito")
+            MsgBox("Plan agregado exitosamente.", MsgBoxStyle.Information, "Éxito")
         Catch ex As Exception
             MsgBox("Error al agregar el plan: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
     End Sub
 
-
     Private Sub btnActualizar_Click(sender As Object, e As EventArgs) Handles btnActualizar.Click
         Try
             If dgvListado.SelectedRows.Count > 0 Then
                 Dim selectedRow As DataGridViewRow = dgvListado.SelectedRows(0)
-                Dim planPorActualizar As New Planes()
-                planPorActualizar.IdPlan = CUInt(selectedRow.Cells("id_plan").Value)
-                planPorActualizar.NombrePlan = selectedRow.Cells("nombre_plan").Value.ToString()
-                planPorActualizar.Descripcion = selectedRow.Cells("descripcion").Value.ToString()
-                planPorActualizar.DuracionDias = CUInt(selectedRow.Cells("duracion_dias").Value)
-                planPorActualizar.Precio = CDec(selectedRow.Cells("precio").Value)
+                Dim planPorActualizar As New Planes() With {
+                    .IdPlan = CUInt(selectedRow.Cells("IdPlan").Value),
+                    .NombrePlan = selectedRow.Cells("NombrePlan").Value.ToString(),
+                    .Descripcion = selectedRow.Cells("Descripcion").Value.ToString(),
+                    .DuracionDias = CUInt(selectedRow.Cells("DuracionDias").Value),
+                    .Precio = CDec(selectedRow.Cells("Precio").Value)
+                }
 
                 Dim frm As New FrmPlanesPopup(False, Me, planPorActualizar)
                 frm.ShowDialog()
@@ -81,16 +82,13 @@ Public Class FrmPlanes
         Catch ex As Exception
             MsgBox("Error al seleccionar el plan: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
-
-
     End Sub
-
 
     Public Sub Actualizar(planActualizado As Planes)
         Try
             nPlanes.Actualizar(planActualizado)
             ActualizarDataGridView()
-            MsgBox("Plan actualizado exitosamente.", MsgBoxStyle.Information, "Exito")
+            MsgBox("Plan actualizado exitosamente.", MsgBoxStyle.Information, "Éxito")
         Catch ex As Exception
             MsgBox("Error al actualizar el plan: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
@@ -100,14 +98,14 @@ Public Class FrmPlanes
         Try
             If dgvListado.SelectedRows.Count > 0 Then
                 Dim selectedRow As DataGridViewRow = dgvListado.SelectedRows(0)
-                Dim idPlan As UInteger = CInt(selectedRow.Cells("id_plan").Value)
+                Dim idPlan As UInteger = CUInt(selectedRow.Cells("IdPlan").Value)
 
                 Dim confirmacion As DialogResult = MessageBox.Show("¿Está seguro de que desea eliminar este plan?", "Confirmar eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                 If confirmacion = DialogResult.Yes Then
                     nPlanes.Eliminar(idPlan)
 
                     ActualizarDataGridView()
-                    MsgBox("Plan eliminado exitosamente.", MsgBoxStyle.Information, "Exito")
+                    MsgBox("Plan eliminado exitosamente.", MsgBoxStyle.Information, "Éxito")
                 End If
             Else
                 MsgBox("Seleccione un plan para eliminar.", MsgBoxStyle.Exclamation, "Aviso")
@@ -117,38 +115,37 @@ Public Class FrmPlanes
         End Try
     End Sub
 
-
     Private Sub tbBuscar_TextChanged(sender As Object, e As EventArgs) Handles tbBuscar.TextChanged
         Try
+            Dim planes As List(Of Planes) = Nothing
+
             If cbOpcionBuscar.SelectedIndex = 0 Then
-                Dim dvPlanes As DataTable = nPlanes.BuscarPorNombre(tbBuscar.Text)
-                dgvListado.DataSource = dvPlanes
-                lblTotal.Text = "Total: " & dgvListado.Rows.Count.ToString()
+                planes = nPlanes.ListarPorNombre(tbBuscar.Text)
             End If
+
+            dgvListado.DataSource = planes
+            lblTotal.Text = "Total: " & planes.Count.ToString()
         Catch ex As Exception
             MsgBox("Error al buscar plan: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
     End Sub
-
 
     Private Sub tbBuscar_KeyDown(sender As Object, e As KeyEventArgs) Handles tbBuscar.KeyDown
         Try
             If e.KeyCode = Keys.Enter Then
+                Dim planes As List(Of Planes) = Nothing
+
                 If cbOpcionBuscar.SelectedIndex = 1 Then
-                    Dim dvPlanes As DataTable = nPlanes.BuscarPorDuracion(CInt(tbBuscar.Text))
-                    dgvListado.DataSource = dvPlanes
-                    lblTotal.Text = "Total: " & dgvListado.Rows.Count.ToString()
+                    planes = nPlanes.ListarPorDuracion(CUInt(tbBuscar.Text))
                 ElseIf cbOpcionBuscar.SelectedIndex = 2 Then
-                    Dim dvPlanes As DataTable = nPlanes.BuscarPorPrecio(CDec(tbBuscar.Text))
-                    dgvListado.DataSource = dvPlanes
-                    lblTotal.Text = "Total: " & dgvListado.Rows.Count.ToString()
+                    planes = nPlanes.ListarPorPrecio(CDec(tbBuscar.Text))
                 End If
+
+                dgvListado.DataSource = planes
+                lblTotal.Text = "Total: " & planes.Count.ToString()
             End If
         Catch ex As Exception
             MsgBox("Error al buscar plan: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
-
     End Sub
 End Class
-
-

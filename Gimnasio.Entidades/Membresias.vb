@@ -7,7 +7,7 @@
     Private _estadoMembresia As String
     Private _fechaRegistro As Date
     Private _ultimaModificacion As Date
-
+    Private _diasRestantes As UInteger
     Public Property IdMembresia As UInteger
         Get
             Return _idMembresia
@@ -77,6 +77,15 @@
         End Get
         Set(value As Date)
             _ultimaModificacion = value
+        End Set
+    End Property
+
+    Public Property DiasRestantes As UInteger
+        Get
+            Return _diasRestantes
+        End Get
+        Set(value As UInteger)
+            _diasRestantes = value
         End Set
     End Property
 End Class

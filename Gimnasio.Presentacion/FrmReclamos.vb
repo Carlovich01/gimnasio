@@ -19,15 +19,15 @@ Public Class FrmReclamos
     Private Sub FrmReclamos_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Try
             ActualizarDataGridView()
-            dgvListado.Columns(0).Visible = False
-            dgvListado.Columns(0).HeaderText = "ID RECLAMO"
-            dgvListado.Columns(1).HeaderText = "TIPO"
-            dgvListado.Columns(2).HeaderText = "DESCRIPCION"
-            dgvListado.Columns(3).HeaderText = "FECHA ENVIO"
-            dgvListado.Columns(4).HeaderText = "ESTADO"
-            dgvListado.Columns(5).HeaderText = "RESPUESTA"
-            dgvListado.Columns(6).HeaderText = "FECHA RESPUESTA"
-            dgvListado.Columns(7).HeaderText = "DNI MIEMBRO"
+
+            dgvListado.Columns("IdReclamos").Visible = False
+            dgvListado.Columns("Tipo").HeaderText = "TIPO"
+            dgvListado.Columns("Descripcion").HeaderText = "DESCRIPCIÓN"
+            dgvListado.Columns("FechaEnvio").HeaderText = "FECHA ENVÍO"
+            dgvListado.Columns("Estado").HeaderText = "ESTADO"
+            dgvListado.Columns("Respuesta").HeaderText = "RESPUESTA"
+            dgvListado.Columns("FechaRespuesta").HeaderText = "FECHA RESPUESTA"
+            dgvListado.Columns("IdMiembro").HeaderText = "ID MIEMBRO"
             cbOpcionBuscar.SelectedIndex = 0
         Catch ex As Exception
             MsgBox("Error al cargar los reclamos: " & ex.Message, MsgBoxStyle.Critical, "Error")
@@ -36,9 +36,9 @@ Public Class FrmReclamos
 
     Public Sub ActualizarDataGridView()
         Try
-            Dim dvReclamos As DataTable = nReclamos.Listar()
-            dgvListado.DataSource = dvReclamos
-            lblTotal.Text = "Total: " & dgvListado.Rows.Count.ToString()
+            Dim reclamos As List(Of Reclamos) = nReclamos.Listar()
+            dgvListado.DataSource = reclamos
+            lblTotal.Text = "Total: " & reclamos.Count.ToString()
         Catch ex As Exception
             MsgBox("Error al cargar los reclamos: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
@@ -58,7 +58,7 @@ Public Class FrmReclamos
         Try
             nReclamos.Insertar(nuevoReclamo)
             ActualizarDataGridView()
-            MsgBox("Reclamo agregado exitosamente.", MsgBoxStyle.Information, "Exito")
+            MsgBox("Reclamo agregado exitosamente.", MsgBoxStyle.Information, "Éxito")
         Catch ex As Exception
             MsgBox("Error al agregar el reclamo: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
@@ -68,9 +68,9 @@ Public Class FrmReclamos
         Try
             nReclamos.Actualizar(reclamoActualizado)
             ActualizarDataGridView()
-            MsgBox("reclamo actualizado exitosamente.", MsgBoxStyle.Information, "Exito")
+            MsgBox("Reclamo actualizado exitosamente.", MsgBoxStyle.Information, "Éxito")
         Catch ex As Exception
-            MsgBox("Error al actualizar el plan: " & ex.Message, MsgBoxStyle.Critical, "Error")
+            MsgBox("Error al actualizar el reclamo: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
     End Sub
 
@@ -78,11 +78,12 @@ Public Class FrmReclamos
         Try
             If dgvListado.SelectedRows.Count > 0 Then
                 Dim selectedRow = dgvListado.SelectedRows(0)
-                Dim reclamoPorActualizar As New Reclamos
-                reclamoPorActualizar.IdReclamos = CUInt(selectedRow.Cells("id_reclamos").Value)
-                reclamoPorActualizar.Tipo = selectedRow.Cells("tipo").Value.ToString
-                reclamoPorActualizar.Descripcion = selectedRow.Cells("descripcion").Value.ToString
-                reclamoPorActualizar.Respuesta = selectedRow.Cells("respuesta").Value.ToString
+                Dim reclamoPorActualizar As New Reclamos With {
+                    .IdReclamos = CUInt(selectedRow.Cells("IdReclamos").Value),
+                    .Tipo = selectedRow.Cells("Tipo").Value.ToString(),
+                    .Descripcion = selectedRow.Cells("Descripcion").Value.ToString(),
+                    .Respuesta = If(IsDBNull(selectedRow.Cells("Respuesta").Value), Nothing, selectedRow.Cells("Respuesta").Value.ToString())
+                }
                 Dim frm As New FrmReclamosPopup(False, Me, reclamoPorActualizar)
                 frm.ShowDialog()
                 ActualizarDataGridView()
@@ -98,14 +99,14 @@ Public Class FrmReclamos
         Try
             If dgvListado.SelectedRows.Count > 0 Then
                 Dim selectedRow = dgvListado.SelectedRows(0)
-                Dim idReclamo As UInteger = selectedRow.Cells("id_reclamos").Value
+                Dim idReclamo As UInteger = CUInt(selectedRow.Cells("IdReclamos").Value)
 
                 Dim confirmacion = MessageBox.Show("¿Está seguro de que desea eliminar este reclamo?", "Confirmar eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                 If confirmacion = DialogResult.Yes Then
                     nReclamos.Eliminar(idReclamo)
 
                     ActualizarDataGridView()
-                    MsgBox("Reclamo eliminado exitosamente.", MsgBoxStyle.Information, "Exito")
+                    MsgBox("Reclamo eliminado exitosamente.", MsgBoxStyle.Information, "Éxito")
                 End If
             Else
                 MsgBox("Seleccione un reclamo para eliminar.", MsgBoxStyle.Exclamation, "Aviso")
@@ -119,24 +120,26 @@ Public Class FrmReclamos
         Try
             If dgvListado.SelectedRows.Count > 0 Then
                 Dim selectedRow = dgvListado.SelectedRows(0)
-                Dim reclamoPorActualizar As New Reclamos
-                reclamoPorActualizar.IdReclamos = CUInt(selectedRow.Cells("id_reclamos").Value)
+                Dim reclamoPorActualizar As New Reclamos With {
+                    .IdReclamos = CUInt(selectedRow.Cells("IdReclamos").Value)
+                }
                 Dim frm As New FrmReclamosPopup(reclamoPorActualizar)
                 frm.ShowDialog()
                 ActualizarDataGridView()
             Else
-                MsgBox("Seleccione un reclamo para actualizar.", MsgBoxStyle.Exclamation, "Advertencia")
+                MsgBox("Seleccione un reclamo para responder.", MsgBoxStyle.Exclamation, "Advertencia")
             End If
         Catch ex As Exception
-            MsgBox("Error al abrir el formulario de actualización: " & ex.Message, MsgBoxStyle.Critical, "Error")
+            MsgBox("Error al abrir el formulario de respuesta: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
     End Sub
 
     Private Sub cbOpcionBuscar_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbOpcionBuscar.SelectedIndexChanged
         Try
-            Dim dvPlanes = nReclamos.BuscarPorEstado(If(cbOpcionBuscar.SelectedIndex = 0, "pendiente", "resuelto"))
-            dgvListado.DataSource = dvPlanes
-            lblTotal.Text = "Total: " & dgvListado.Rows.Count.ToString
+            Dim estado = If(cbOpcionBuscar.SelectedIndex = 0, "pendiente", "resuelto")
+            Dim reclamos As List(Of Reclamos) = nReclamos.ListarPorEstado(estado)
+            dgvListado.DataSource = reclamos
+            lblTotal.Text = "Total: " & reclamos.Count.ToString()
         Catch ex As Exception
             MsgBox("Error al buscar reclamos: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
@@ -146,8 +149,8 @@ Public Class FrmReclamos
         Try
             If dgvListado.SelectedRows.Count > 0 Then
                 Dim selectedRow = dgvListado.SelectedRows(0)
-                Dim idReclamo As UInteger = CInt(selectedRow.Cells("id_reclamos").Value)
-                Dim estadoActual As String = selectedRow.Cells("estado").Value.ToString().ToLower()
+                Dim idReclamo As UInteger = CUInt(selectedRow.Cells("IdReclamos").Value)
+                Dim estadoActual As String = selectedRow.Cells("Estado").Value.ToString().ToLower()
 
                 If estadoActual = "pendiente" Then
                     nReclamos.EstadoResuelto(idReclamo)
@@ -167,6 +170,4 @@ Public Class FrmReclamos
             MsgBox("Error al cambiar el estado del reclamo: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
     End Sub
-
-
 End Class

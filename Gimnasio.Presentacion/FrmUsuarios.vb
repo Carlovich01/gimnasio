@@ -3,17 +3,18 @@ Imports Gimnasio.Negocio
 
 Public Class FrmUsuarios
     Private nUsuarios As New NUsuarios()
+
     Private Sub FrmPlanes_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Try
             ActualizarDataGridView()
-            dgvListado.Columns(0).Visible = False
-            dgvListado.Columns(1).HeaderText = "NOMBRE DE USUARIO"
-            dgvListado.Columns(2).HeaderText = "CONTRASEÑA"
-            dgvListado.Columns(3).HeaderText = "NOMBRE COMPLETO"
-            dgvListado.Columns(4).HeaderText = "EMAIL"
-            dgvListado.Columns(5).HeaderText = "ROL"
-            dgvListado.Columns(6).HeaderText = "FECHA CREACION"
-            dgvListado.Columns(7).HeaderText = "ULTIMA MODIFICACION"
+            dgvListado.Columns("IdUsuario").Visible = False
+            dgvListado.Columns("Username").HeaderText = "NOMBRE DE USUARIO"
+            dgvListado.Columns("PasswordHash").HeaderText = "CONTRASEÑA"
+            dgvListado.Columns("NombreCompleto").HeaderText = "NOMBRE COMPLETO"
+            dgvListado.Columns("Email").HeaderText = "EMAIL"
+            dgvListado.Columns("IdRol").HeaderText = "ROL"
+            dgvListado.Columns("FechaCreacion").HeaderText = "FECHA CREACIÓN"
+            dgvListado.Columns("UltimaModificacion").HeaderText = "ÚLTIMA MODIFICACIÓN"
             cbOpcionBuscar.SelectedIndex = 0
         Catch ex As Exception
             MsgBox("Error al cargar los usuarios: " & ex.Message, MsgBoxStyle.Critical, "Error")
@@ -22,9 +23,9 @@ Public Class FrmUsuarios
 
     Public Sub ActualizarDataGridView()
         Try
-            Dim dvUsuarios As DataTable = nUsuarios.Listar()
-            dgvListado.DataSource = dvUsuarios
-            lblTotal.Text = "Total: " & dgvListado.Rows.Count.ToString()
+            Dim usuarios As List(Of Usuarios) = nUsuarios.Listar()
+            dgvListado.DataSource = usuarios
+            lblTotal.Text = "Total: " & usuarios.Count.ToString()
         Catch ex As Exception
             MsgBox("Error al cargar los usuarios: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
@@ -43,7 +44,7 @@ Public Class FrmUsuarios
         Try
             nUsuarios.Insertar(nuevoUsuario)
             ActualizarDataGridView()
-            MsgBox("Usuario agregado exitosamente.", MsgBoxStyle.Information, "Exito")
+            MsgBox("Usuario agregado exitosamente.", MsgBoxStyle.Information, "Éxito")
         Catch ex As Exception
             MsgBox("Error al agregar el usuario: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
@@ -53,12 +54,13 @@ Public Class FrmUsuarios
         Try
             If dgvListado.SelectedRows.Count > 0 Then
                 Dim selectedRow As DataGridViewRow = dgvListado.SelectedRows(0)
-                Dim usuarioPorActualizar As New Usuarios()
-                usuarioPorActualizar.IdUsuario = CInt(selectedRow.Cells("id_usuario").Value)
-                usuarioPorActualizar.Username = selectedRow.Cells("username").Value.ToString
-                usuarioPorActualizar.NombreCompleto = selectedRow.Cells("nombre_completo").Value.ToString
-                usuarioPorActualizar.Email = selectedRow.Cells("email").Value.ToString
-                usuarioPorActualizar.IdRol = If(selectedRow.Cells("nombre_rol").Value.ToString() = "Administrador", 1, 2)
+                Dim usuarioPorActualizar As New Usuarios() With {
+                    .IdUsuario = CUInt(selectedRow.Cells("IdUsuario").Value),
+                    .Username = selectedRow.Cells("Username").Value.ToString(),
+                    .NombreCompleto = selectedRow.Cells("NombreCompleto").Value.ToString(),
+                    .Email = If(IsDBNull(selectedRow.Cells("Email").Value), Nothing, selectedRow.Cells("Email").Value.ToString()),
+                    .IdRol = CUInt(selectedRow.Cells("IdRol").Value)
+                }
                 Dim frm As New FrmUsuariosPopup(False, Me, usuarioPorActualizar)
                 frm.ShowDialog()
             Else
@@ -73,19 +75,18 @@ Public Class FrmUsuarios
         Try
             nUsuarios.Actualizar(usuarioActualizado)
             ActualizarDataGridView()
-            MsgBox("Usuario actualizado exitosamente.", MsgBoxStyle.Information, "Exito")
+            MsgBox("Usuario actualizado exitosamente.", MsgBoxStyle.Information, "Éxito")
         Catch ex As Exception
             MsgBox("Error al actualizar el usuario: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
     End Sub
 
-
     Private Sub tbBuscar_TextChanged(sender As Object, e As EventArgs) Handles tbBuscar.TextChanged
         Try
             If cbOpcionBuscar.SelectedIndex = 0 Then
-                Dim dvUsuaurio As DataTable = nUsuarios.BuscarPorNombre(tbBuscar.Text)
-                dgvListado.DataSource = dvUsuaurio
-                lblTotal.Text = "Total: " & dgvListado.Rows.Count.ToString()
+                Dim usuarios As List(Of Usuarios) = nUsuarios.ListarPorNombre(tbBuscar.Text)
+                dgvListado.DataSource = usuarios
+                lblTotal.Text = "Total: " & usuarios.Count.ToString()
             End If
         Catch ex As Exception
             MsgBox("Error al buscar usuario: " & ex.Message, MsgBoxStyle.Critical, "Error")
@@ -96,14 +97,14 @@ Public Class FrmUsuarios
         Try
             If dgvListado.SelectedRows.Count > 0 Then
                 Dim selectedRow As DataGridViewRow = dgvListado.SelectedRows(0)
-                Dim idUsuario As UInteger = CInt(selectedRow.Cells("id_usuario").Value)
+                Dim idUsuario As UInteger = CUInt(selectedRow.Cells("IdUsuario").Value)
 
                 Dim confirmacion As DialogResult = MessageBox.Show("¿Está seguro de que desea eliminar este Usuario?", "Confirmar eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                 If confirmacion = DialogResult.Yes Then
                     nUsuarios.Eliminar(idUsuario)
 
                     ActualizarDataGridView()
-                    MsgBox("Usuario eliminado exitosamente.", MsgBoxStyle.Information, "Exito")
+                    MsgBox("Usuario eliminado exitosamente.", MsgBoxStyle.Information, "Éxito")
                 End If
             Else
                 MsgBox("Seleccione un Usuario para eliminar.", MsgBoxStyle.Exclamation, "Aviso")
@@ -112,6 +113,4 @@ Public Class FrmUsuarios
             MsgBox("Error al eliminar el Usuario: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
     End Sub
-
-
 End Class

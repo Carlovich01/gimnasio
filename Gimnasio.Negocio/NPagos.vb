@@ -4,11 +4,9 @@ Imports System.Data
 
 Public Class NPagos
     Private dPagos As New DPagos()
-    Public Function Listar() As DataTable
+    Public Function Listar() As List(Of Pagos)
         Try
-            Dim dvPagos As DataTable
-            dvPagos = dPagos.Listar()
-            Return dvPagos
+            Return dPagos.Listar()
         Catch ex As Exception
             Throw New Exception(ex.Message)
         End Try
@@ -37,54 +35,46 @@ Public Class NPagos
         End Try
     End Sub
 
-    Public Function BuscarPorFecha(fechaInicio As DateTime, fechaFin As DateTime) As DataTable
+    Public Function ListarPorFecha(fechaInicio As DateTime, fechaFin As DateTime) As List(Of Pagos)
         Try
-            Dim dvPagos As DataTable
-            dvPagos = dPagos.BuscarPorFecha(fechaInicio, fechaFin)
-            Return dvPagos
+            Return dPagos.ListarPorFechas(fechaInicio, fechaFin)
         Catch ex As Exception
             Throw New Exception(ex.Message)
         End Try
     End Function
 
-    Public Function BuscarPorDni(dni As String) As DataTable
+    Public Function ListarPorDni(dni As String) As List(Of Pagos)
         Try
-            Dim dvPagos As DataTable
-            dvPagos = dPagos.BuscarPorDni(dni)
-            Return dvPagos
+            Return dPagos.ListarPorDni(dni)
         Catch ex As Exception
             Throw New Exception(ex.Message)
         End Try
     End Function
 
-    Public Function BuscarPorNombrePlan(nombre As String) As DataTable
+    Public Function ListarPorNombrePlan(nombre As String) As List(Of Pagos)
         Try
-            Dim dvPagos As DataTable
-            dvPagos = dPagos.BuscarPorNombrePlan(nombre)
-            Return dvPagos
+            Return dPagos.ListarPorNombrePlan(nombre)
         Catch ex As Exception
             Throw New Exception(ex.Message)
         End Try
     End Function
 
-    Public Function BuscarPorMetodoPago(metodo As String) As DataTable
+    Public Function ListarPorMetodoPago(metodo As String) As List(Of Pagos)
         Try
-            Dim dvPagos As DataTable
-            dvPagos = dPagos.BuscarPorMetodoPago(metodo)
-            Return dvPagos
+            Return ListarPorMetodoPago(metodo)
         Catch ex As Exception
             Throw New Exception(ex.Message)
         End Try
     End Function
 
-    Public Function BuscarPorMontos(montoMin As Decimal, montoMax As Decimal) As DataTable
+    Public Function ListarPorMontos(montoMin As Decimal, montoMax As Decimal) As List(Of Pagos)
         Try
             If montoMin > montoMax Then
                 Dim temp As Decimal = montoMin
                 montoMin = montoMax
                 montoMax = temp
             End If
-            Return dPagos.BuscarPorMontos(montoMin, montoMax)
+            Return dPagos.ListarPorMontos(montoMin, montoMax)
         Catch ex As Exception
             Throw New Exception(ex.Message)
         End Try

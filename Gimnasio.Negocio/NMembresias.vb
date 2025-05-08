@@ -5,7 +5,7 @@ Imports System.Data
 Public Class NMembresias
     Private dMembresias As New DMembresias()
 
-    Public Function Listar() As DataTable
+    Public Function Listar() As List(Of Membresias)
         Try
             Return dMembresias.Listar()
         Catch ex As Exception
@@ -26,36 +26,32 @@ Public Class NMembresias
 
     Public Function ObtenerIdMembresia(membresia As Membresias) As UInteger
         Try
-            Dim idMembresia As UInteger = dMembresias.ObtenerIdMembresia(membresia)
-            Return idMembresia
+            Return dMembresias.ObtenerIdMembresia(membresia)
         Catch ex As Exception
             Throw New Exception("Error al obtener el ID de la membresía: " & ex.Message)
         End Try
     End Function
 
 
-    Public Function BuscarPorDni(dni As String) As DataTable
+    Public Function ListarPorDni(dni As String) As List(Of Membresias)
         Try
-            Dim dvMembresias As DataTable = dMembresias.BuscarPorDni(dni)
-            Return dvMembresias
+            Return dMembresias.ListarPorDni(dni)
         Catch ex As Exception
             Throw New Exception("Error al buscar por DNI: " & ex.Message)
         End Try
     End Function
 
-    Public Function BuscarPorNombrePlan(nombre As String) As DataTable
+    Public Function ListarPorNombrePlan(nombre As String) As List(Of Membresias)
         Try
-            Dim dvMembresias As DataTable = dMembresias.BuscarPorNombrePlan(nombre)
-            Return dvMembresias
+            Return dMembresias.ListarPorNombrePlan(nombre)
         Catch ex As Exception
             Throw New Exception("Error al buscar por plan: " & ex.Message)
         End Try
     End Function
 
-    Public Function BuscarPorEstado(estado As String) As DataTable
+    Public Function ListarPorEstado(estado As String) As List(Of Membresias)
         Try
-            Dim dvMembresias As DataTable = dMembresias.BuscarPorEstado(estado)
-            Return dvMembresias
+            Return dMembresias.ListarPorEstado(estado)
         Catch ex As Exception
             Throw New Exception("Error al buscar por estado: " & ex.Message)
         End Try

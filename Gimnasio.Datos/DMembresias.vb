@@ -3,23 +3,57 @@ Imports System.Data
 Imports Gimnasio.Entidades
 
 Public Class DMembresias
-    Inherits ConexionBase
+    Inherits Conexion
+    Private Function MapearMembresias(tabla As DataTable) As List(Of Membresias)
+        Dim listaMembresias As New List(Of Membresias)()
 
-    Public Function Listar() As DataTable
-        ' Actualizar estados de membresías vencidas
+        For Each row As DataRow In tabla.Rows
+            Dim membresia As New Membresias() With {
+                .IdMembresia = Convert.ToUInt32(row("id_membresia")),
+                .IdMiembro = Convert.ToUInt32(row("id_miembro")),
+                .IdPlan = Convert.ToUInt32(row("id_plan")),
+                .FechaInicio = Convert.ToDateTime(row("fecha_inicio")),
+                .FechaFin = Convert.ToDateTime(row("fecha_fin")),
+                .EstadoMembresia = row("estado_membresia").ToString(),
+                .FechaRegistro = Convert.ToDateTime(row("fecha_registro")),
+                .UltimaModificacion = Convert.ToDateTime(row("ultima_modificacion"))
+            }
+            listaMembresias.Add(membresia)
+        Next
+
+        Return listaMembresias
+    End Function
+
+    Private Function MapearMembresia(tabla As DataTable) As Membresias
+        If tabla.Rows.Count = 0 Then
+            Return Nothing
+        End If
+        Dim row As DataRow = tabla.Rows(0)
+
+        Return New Membresias() With {
+                .IdMembresia = Convert.ToUInt32(row("id_membresia")),
+                .IdMiembro = Convert.ToUInt32(row("id_miembro")),
+                .IdPlan = Convert.ToUInt32(row("id_plan")),
+                .FechaInicio = Convert.ToDateTime(row("fecha_inicio")),
+                .FechaFin = Convert.ToDateTime(row("fecha_fin")),
+                .EstadoMembresia = row("estado_membresia").ToString(),
+                .FechaRegistro = Convert.ToDateTime(row("fecha_registro")),
+                .UltimaModificacion = Convert.ToDateTime(row("ultima_modificacion"))
+            }
+    End Function
+    Public Function Listar() As List(Of Membresias)
         Dim actualizarQuery As String = "
             UPDATE membresias_miembro
             SET estado_membresia = 'Inactiva'
             WHERE estado_membresia = 'Activa' AND fecha_fin < CURDATE()"
         ExecuteNonQuery(actualizarQuery, Nothing)
 
-        ' Listar todas las membresías
         Dim query As String = "SELECT * FROM vista_membresias"
-        Return ExecuteQuery(query, Nothing)
+        Dim resultado As DataTable = ExecuteQuery(query, Nothing)
+        Return MapearMembresias(resultado)
     End Function
 
     Public Sub Insertar(membresia As Membresias)
-        ' Verificar si ya existe una membresía activa o pendiente de pago
         Dim verificarQuery As String = "
             SELECT COUNT(*) 
             FROM membresias_miembro 
@@ -35,7 +69,6 @@ Public Class DMembresias
             Throw New Exception("El usuario ya tiene una membresía activa o pendiente de pago para este plan.")
         End If
 
-        ' Insertar nueva membresía
         Dim query As String = "INSERT INTO membresias_miembro (id_miembro, id_plan, fecha_inicio, fecha_fin) VALUES (@idmi, @idpla, @in, @fin)"
         Dim parameters As New Dictionary(Of String, Object) From {
             {"@idmi", membresia.IdMiembro},
@@ -54,6 +87,15 @@ Public Class DMembresias
         }
         Dim resultado = ExecuteQuery(query, parameters)
         Return If(resultado.Rows.Count > 0, Convert.ToInt32(resultado.Rows(0)("id_membresia")), 0)
+    End Function
+
+    Public Function ObtenerPorIdMiembroMasReciente(idMiembro As UInteger) As Membresias
+        Dim query As String = "SELECT * FROM membresias_miembro WHERE id_miembro = @idMiembro ORDER BY fecha_hora_checkin DESC LIMIT 1"
+        Dim parameters As New Dictionary(Of String, Object) From {
+            {"@idMiembro", idMiembro}
+        }
+        Dim resultado As DataTable = ExecuteQuery(query, parameters)
+        Return MapearMembresia(resultado)
     End Function
 
     Public Sub ActualizarEstadoYFechas(membresia As Membresias)
@@ -91,27 +133,32 @@ Public Class DMembresias
         Return If(resultado.Rows.Count > 0, Convert.ToInt32(resultado.Rows(0)("duracion_dias")), 0)
     End Function
 
-    Public Function BuscarPorDni(dni As String) As DataTable
+    Public Function ListarPorDni(dni As String) As List(Of Membresias)
         Dim query As String = "SELECT * FROM vista_membresias WHERE dni_miembro LIKE @dni"
         Dim parameters As New Dictionary(Of String, Object) From {
             {"@dni", "%" & dni & "%"}
         }
-        Return ExecuteQuery(query, parameters)
+        Dim resultado As DataTable = ExecuteQuery(query, parameters)
+        Return MapearMembresias(resultado)
     End Function
 
-    Public Function BuscarPorNombrePlan(nombrePlan As String) As DataTable
+    Public Function ListarPorNombrePlan(nombrePlan As String) As List(Of Membresias)
         Dim query As String = "SELECT * FROM vista_membresias WHERE nombre_plan LIKE @nombrePlan"
         Dim parameters As New Dictionary(Of String, Object) From {
             {"@nombrePlan", "%" & nombrePlan & "%"}
         }
-        Return ExecuteQuery(query, parameters)
+        Dim resultado As DataTable = ExecuteQuery(query, parameters)
+        Return MapearMembresias(resultado)
     End Function
 
-    Public Function BuscarPorEstado(estado As String) As DataTable
+    Public Function ListarPorEstado(estado As String) As List(Of Membresias)
         Dim query As String = "SELECT * FROM vista_membresias WHERE estado_membresia = @estado"
         Dim parameters As New Dictionary(Of String, Object) From {
             {"@estado", estado}
         }
-        Return ExecuteQuery(query, parameters)
+        Dim resultado As DataTable = ExecuteQuery(query, parameters)
+        Return MapearMembresias(resultado)
     End Function
+
+
 End Class

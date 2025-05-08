@@ -3,16 +3,53 @@ Imports System.Data
 Imports Gimnasio.Entidades
 
 Public Class DUsuarios
-    Inherits ConexionBase
+    Inherits Conexion
 
-    Public Function Listar() As DataTable
+    Private Function MapearUsuarios(tabla As DataTable) As List(Of Usuarios)
+        Dim listaUsuarios As New List(Of Usuarios)()
+        For Each row As DataRow In tabla.Rows
+            Dim usuario As New Usuarios() With {
+           .IdUsuario = Convert.ToUInt32(row("id_usuario")),
+           .Username = row("username").ToString(),
+           .PasswordHash = row("password_hash").ToString(),
+           .NombreCompleto = row("nombre_completo").ToString(),
+           .Email = If(IsDBNull(row("email")), Nothing, row("email").ToString()),
+           .IdRol = Convert.ToUInt32(row("id_rol")),
+           .FechaCreacion = Convert.ToDateTime(row("fecha_creacion")),
+           .UltimaModificacion = Convert.ToDateTime(row("ultima_modificacion"))
+            }
+            listaUsuarios.Add(usuario)
+        Next
+        Return listaUsuarios
+    End Function
+    Private Function MapearUsuario(tabla As DataTable) As Usuarios
+        If tabla.Rows.Count = 0 Then
+            Return Nothing
+        End If
+
+        Dim row As DataRow = tabla.Rows(0)
+        Return New Usuarios() With {
+           .IdUsuario = Convert.ToUInt32(row("id_usuario")),
+           .Username = row("username").ToString(),
+           .PasswordHash = row("password_hash").ToString(),
+           .NombreCompleto = row("nombre_completo").ToString(),
+           .Email = If(IsDBNull(row("email")), Nothing, row("email").ToString()),
+           .IdRol = Convert.ToUInt32(row("id_rol")),
+           .FechaCreacion = Convert.ToDateTime(row("fecha_creacion")),
+           .UltimaModificacion = Convert.ToDateTime(row("ultima_modificacion"))
+       }
+    End Function
+
+    Public Function Listar() As List(Of Usuarios)
         Dim query As String = "
-            SELECT u.id_usuario, u.username, u.password_hash, u.nombre_completo, u.email, 
-                   r.nombre_rol, u.fecha_creacion, u.ultima_modificacion 
-            FROM usuarios_sistema AS u 
-            INNER JOIN roles AS r ON u.id_rol = r.id_rol 
-            ORDER BY u.ultima_modificacion DESC"
-        Return ExecuteQuery(query, Nothing)
+           SELECT u.id_usuario, u.username, u.password_hash, u.nombre_completo, u.email, 
+                  u.id_rol, u.fecha_creacion, u.ultima_modificacion 
+           FROM usuarios_sistema AS u 
+           INNER JOIN roles AS r ON u.id_rol = r.id_rol 
+           ORDER BY u.ultima_modificacion DESC"
+        Dim resultado As DataTable = ExecuteQuery(query, Nothing)
+
+        Return MapearUsuarios(resultado)
     End Function
 
     Public Sub Insertar(Obj As Usuarios)
@@ -52,7 +89,8 @@ Public Class DUsuarios
         ExecuteNonQuery(query, parameters)
     End Sub
 
-    Public Function BuscarPorNombre(nombre As String) As DataTable
+
+    Public Function ListarPorNombre(nombre As String) As List(Of Usuarios)
         Dim query As String = "
             SELECT * 
             FROM usuarios_sistema 
@@ -61,27 +99,22 @@ Public Class DUsuarios
         Dim parameters As New Dictionary(Of String, Object) From {
             {"@nombre", "%" & nombre & "%"}
         }
-        Return ExecuteQuery(query, parameters)
+
+        Dim resultado As DataTable = ExecuteQuery(query, parameters)
+
+
+        Return MapearUsuarios(resultado)
     End Function
 
     Public Function ObtenerPorUsername(username As String) As Usuarios
         Dim query As String = "SELECT * FROM usuarios_sistema WHERE username = @user"
         Dim parameters As New Dictionary(Of String, Object) From {
-            {"@user", username}
-        }
+           {"@user", username}
+       }
         Dim resultado As DataTable = ExecuteQuery(query, parameters)
 
         If resultado.Rows.Count > 0 Then
-            Dim row = resultado.Rows(0)
-            Dim usuario As New Usuarios() With {
-                .IdUsuario = Convert.ToInt32(row("id_usuario")),
-                .Username = row("username").ToString(),
-                .PasswordHash = row("password_hash").ToString(),
-                .NombreCompleto = row("nombre_completo").ToString(),
-                .Email = If(IsDBNull(row("email")), Nothing, row("email").ToString()),
-                .IdRol = Convert.ToInt32(row("id_rol"))
-            }
-            Return usuario
+            Return MapearUsuario(resultado)
         End If
 
         Return Nothing

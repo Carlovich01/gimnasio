@@ -4,47 +4,39 @@ Imports Gimnasio.Negocio
 Public Class FrmMembresias
     Private nMembresias As New NMembresias()
 
-
     Private Sub FrmPlanes_Load(sender As Object, e As EventArgs) Handles MyBase.Load
         Try
             ActualizarDataGridView()
 
-            dgvListado.Columns(0).Visible = False
-            dgvListado.Columns(1).Visible = False
-            dgvListado.Columns(2).Visible = False
-            dgvListado.Columns(0).HeaderText = "ID MEMBRESIA"
-            dgvListado.Columns(1).HeaderText = "ID MIEMBRO"
-            dgvListado.Columns(2).HeaderText = "ID PLAN"
-            dgvListado.Columns(3).HeaderText = "DNI MIEMBRO"
-            dgvListado.Columns(4).HeaderText = "APELLIDO MIEMBRO"
-            dgvListado.Columns(5).HeaderText = "NOMBRE MIEMBRO"
-            dgvListado.Columns(6).HeaderText = "NOMBRE PLAN"
-            dgvListado.Columns(7).HeaderText = "PRECIO PLAN"
-            dgvListado.Columns(8).HeaderText = "DURACION PLAN"
-            dgvListado.Columns(9).HeaderText = "FECHA INICIO"
-            dgvListado.Columns(10).HeaderText = "FECHA FIN"
-            dgvListado.Columns(11).HeaderText = "ESTADO"
-            dgvListado.Columns(12).HeaderText = "FECHA REGISTRO"
-            dgvListado.Columns(13).HeaderText = "ULTIMA MODIFICACION"
-
+            'dgvListado.Columns("id_membresia").Visible = False
+            'dgvListado.Columns("id_miembro").Visible = False
+            'dgvListado.Columns("id_plan").Visible = False
+            'dgvListado.Columns("dni_miembro").HeaderText = "DNI MIEMBRO"
+            'dgvListado.Columns("apellido_miembro").HeaderText = "APELLIDO MIEMBRO"
+            'dgvListado.Columns("nombre_plan").HeaderText = "NOMBRE PLAN"
+            'dgvListado.Columns("precio_plan").HeaderText = "PRECIO PLAN"
+            'dgvListado.Columns("duracion_dias_plan").HeaderText = "DURACION"
+            'dgvListado.Columns("fecha_inicio").HeaderText = "FECHA INICIO"
+            'dgvListado.Columns("fecha_fin").HeaderText = "FECHA FIN"
+            'dgvListado.Columns("estado_membresia").HeaderText = "ESTADO MEMBRESIA"
+            'dgvListado.Columns("fecha_registro").HeaderText = "FECHA REGISTRO"
+            'dgvListado.Columns("ultima_modificacion").HeaderText = "ULTIMA MODIFICACION"
 
             cbOpcionBuscar.SelectedIndex = 0
-
         Catch ex As Exception
-            MsgBox("Error al cargar las membresias: " & ex.Message, MsgBoxStyle.Critical, "Error")
+            MsgBox("Error al cargar las membresías: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
     End Sub
 
     Public Sub ActualizarDataGridView()
         Try
-            Dim dvMembresias As DataTable = nMembresias.Listar()
-            dgvListado.DataSource = dvMembresias
-            lblTotal.Text = "Total: " & dgvListado.Rows.Count.ToString()
+            Dim membresias As List(Of Membresias) = nMembresias.Listar()
+            dgvListado.DataSource = membresias
+            lblTotal.Text = "Total: " & membresias.Count.ToString()
         Catch ex As Exception
-            MsgBox("Error al cargar las membresias: " & ex.Message, MsgBoxStyle.Critical, "Error")
+            MsgBox("Error al cargar las membresías: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
     End Sub
-
 
     Private Sub btnInsertar_Click_1(sender As Object, e As EventArgs) Handles btnInsertar.Click
         Try
@@ -60,9 +52,9 @@ Public Class FrmMembresias
         Try
             If dgvListado.SelectedRows.Count > 0 Then
                 Dim selectedRow As DataGridViewRow = dgvListado.SelectedRows(0)
-                Dim idMembresia As UInteger = CInt(selectedRow.Cells("id_membresia").Value)
-                Dim precio As Decimal = Convert.ToDecimal(selectedRow.Cells("precio_plan").Value)
-                Dim estadoMembresia As String = selectedRow.Cells("estado_membresia").Value.ToString()
+                Dim idMembresia As UInteger = CUInt(selectedRow.Cells("IdMembresia").Value)
+                Dim precio As Decimal = Convert.ToDecimal(selectedRow.Cells("PrecioPlan").Value)
+                Dim estadoMembresia As String = selectedRow.Cells("EstadoMembresia").Value.ToString()
 
                 If estadoMembresia = "Activa" Then
                     MsgBox("La membresía ya está activa. No es necesario realizar un pago.", MsgBoxStyle.Information, "Información")
@@ -82,18 +74,18 @@ Public Class FrmMembresias
         End Try
     End Sub
 
-
     Private Sub tbBuscar_TextChanged_1(sender As Object, e As EventArgs) Handles tbBuscar.TextChanged
         Try
+            Dim membresias As List(Of Membresias) = Nothing
+
             If cbOpcionBuscar.SelectedIndex = 0 Then
-                Dim dvMembresia As DataTable = nMembresias.BuscarPorDni(tbBuscar.Text)
-                dgvListado.DataSource = dvMembresia
-                lblTotal.Text = "Total: " & dgvListado.Rows.Count.ToString
+                membresias = nMembresias.ListarPorDni(tbBuscar.Text)
             ElseIf cbOpcionBuscar.SelectedIndex = 1 Then
-                Dim dvMembresia As DataTable = nMembresias.BuscarPorNombrePlan(tbBuscar.Text)
-                dgvListado.DataSource = dvMembresia
-                lblTotal.Text = "Total: " & dgvListado.Rows.Count.ToString
+                membresias = nMembresias.ListarPorNombrePlan(tbBuscar.Text)
             End If
+
+            dgvListado.DataSource = membresias
+            lblTotal.Text = "Total: " & membresias.Count.ToString()
         Catch ex As Exception
             MsgBox("Error al buscar miembro: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
@@ -101,19 +93,25 @@ Public Class FrmMembresias
 
     Private Sub cbOpcionBuscar_SelectedIndexChanged(sender As Object, e As EventArgs) Handles cbOpcionBuscar.SelectedIndexChanged
         Try
+            Dim membresias As List(Of Membresias) = Nothing
+
             If cbOpcionBuscar.SelectedIndex = 2 Then
-                Dim dvMembresia As DataTable = nMembresias.BuscarPorEstado("Activa")
-                dgvListado.DataSource = dvMembresia
-                lblTotal.Text = "Total: " & dgvListado.Rows.Count.ToString
+                membresias = nMembresias.ListarPorEstado("Activa")
                 tbBuscar.Enabled = False
             ElseIf cbOpcionBuscar.SelectedIndex = 3 Then
-                Dim dvMembresia As DataTable = nMembresias.BuscarPorEstado("Inactiva")
-                dgvListado.DataSource = dvMembresia
-                lblTotal.Text = "Total: " & dgvListado.Rows.Count.ToString
+                membresias = nMembresias.ListarPorEstado("Inactiva")
                 tbBuscar.Enabled = False
             Else
                 tbBuscar.Enabled = True
             End If
+
+            'si la lista es 0
+            If membresias Is Nothing OrElse membresias.Count = 0 Then
+                MsgBox("No se encontraron resultados.", MsgBoxStyle.Information, "Información")
+                Return
+            End If
+            dgvListado.DataSource = membresias
+            lblTotal.Text = "Total: " & membresias.Count.ToString()
         Catch ex As Exception
             MsgBox("Error al buscar miembro: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try

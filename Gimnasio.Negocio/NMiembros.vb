@@ -3,14 +3,12 @@ Imports Gimnasio.Datos
 Imports Gimnasio.Entidades
 Public Class NMiembros
     Private dMiembros As New DMiembros()
-    Public Function Listar() As DataTable
-        Dim dvMiembros As DataTable
+    Public Function Listar() As List(Of Miembros)
         Try
-            dvMiembros = dMiembros.Listar()
+            Return dMiembros.Listar()
         Catch ex As Exception
             Throw New Exception(ex.Message)
         End Try
-        Return dvMiembros
     End Function
 
     Public Sub Insertar(Obj As Miembros)
@@ -37,19 +35,25 @@ Public Class NMiembros
         End Try
     End Sub
 
-    Public Function BuscarPorNombre(nombre As String) As DataTable
+    Public Function ListarPorNombre(nombre As String) As List(Of Miembros)
         Try
-            Dim dvMiembros As DataTable = dMiembros.BuscarPorNombre(nombre)
-            Return dvMiembros
+            Return dMiembros.ListarPorNombre(nombre)
         Catch ex As Exception
             Throw New Exception(ex.Message)
         End Try
     End Function
 
-    Public Function BuscarPorDni(dni As String) As DataTable
+    Public Function ObtenerPorDni(dni As String) As Miembros
         Try
-            Dim dvMiembros As DataTable = dMiembros.BuscarPorDni(dni)
-            Return dvMiembros
+            Return dMiembros.ObtenerPorDni(dni)
+        Catch ex As Exception
+            Throw New Exception(ex.Message)
+        End Try
+    End Function
+
+    Public Function ListarPorDni(dni As String) As List(Of Miembros)
+        Try
+            Return dMiembros.ListarPorDni(dni)
         Catch ex As Exception
             Throw New Exception(ex.Message)
         End Try

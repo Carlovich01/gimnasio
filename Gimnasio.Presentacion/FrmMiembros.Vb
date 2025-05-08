@@ -8,18 +8,17 @@ Public Class FrmMiembros
         Try
             ActualizarDataGridView()
 
-            dgvListado.Columns(0).Visible = False
-            dgvListado.Columns(1).HeaderText = "DNI"
-            dgvListado.Columns(2).HeaderText = "Nombre"
-            dgvListado.Columns(3).HeaderText = "Apellido"
-            dgvListado.Columns(4).HeaderText = "Género"
-            dgvListado.Columns(5).HeaderText = "Teléfono"
-            dgvListado.Columns(6).HeaderText = "Email"
-            dgvListado.Columns(7).HeaderText = "Fecha de Registro"
-            dgvListado.Columns(8).HeaderText = "Última Modificación"
+            dgvListado.Columns("IdMiembro").Visible = False
+            dgvListado.Columns("Dni").HeaderText = "DNI"
+            dgvListado.Columns("Nombre").HeaderText = "Nombre"
+            dgvListado.Columns("Apellido").HeaderText = "Apellido"
+            dgvListado.Columns("Genero").HeaderText = "Género"
+            dgvListado.Columns("Telefono").HeaderText = "Teléfono"
+            dgvListado.Columns("Email").HeaderText = "Email"
+            dgvListado.Columns("FechaRegistro").HeaderText = "Fecha de Registro"
+            dgvListado.Columns("UltimaModificacion").HeaderText = "Última Modificación"
 
             cbOpcionBuscar.SelectedIndex = 0
-
         Catch ex As Exception
             MsgBox("Error al cargar los miembros: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
@@ -27,9 +26,9 @@ Public Class FrmMiembros
 
     Public Sub ActualizarDataGridView()
         Try
-            Dim dvMiembros As DataTable = nMiembros.Listar()
-            dgvListado.DataSource = dvMiembros
-            lblTotal.Text = "Total: " & dgvListado.Rows.Count.ToString()
+            Dim miembros As List(Of Miembros) = nMiembros.Listar()
+            dgvListado.DataSource = miembros
+            lblTotal.Text = "Total: " & miembros.Count.ToString()
         Catch ex As Exception
             MsgBox("Error al cargar los miembros: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
@@ -48,28 +47,27 @@ Public Class FrmMiembros
         Try
             nMiembros.Insertar(nuevoMiembro)
             ActualizarDataGridView()
-            MsgBox("Miembro agregado exitosamente.", MsgBoxStyle.Information, "Exito")
+            MsgBox("Miembro agregado exitosamente.", MsgBoxStyle.Information, "Éxito")
             Dim FrmMembresiasPopup As New FrmMembresiasPopup(nuevoMiembro)
             FrmMembresiasPopup.ShowDialog()
-
         Catch ex As Exception
             MsgBox("Error al agregar el miembro: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
     End Sub
 
-
     Private Sub btnActualizar_Click(sender As Object, e As EventArgs) Handles btnActualizar.Click
         Try
             If dgvListado.SelectedRows.Count > 0 Then
                 Dim selectedRow As DataGridViewRow = dgvListado.SelectedRows(0)
-                Dim miembroPorActualizar As New Miembros()
-                miembroPorActualizar.IdMiembro = CUInt(selectedRow.Cells("id_miembro").Value)
-                miembroPorActualizar.Dni = selectedRow.Cells("dni").Value.ToString()
-                miembroPorActualizar.Nombre = selectedRow.Cells("nombre").Value.ToString()
-                miembroPorActualizar.Apellido = selectedRow.Cells("apellido").Value.ToString()
-                miembroPorActualizar.Genero = selectedRow.Cells("genero").Value.ToString()
-                miembroPorActualizar.Telefono = selectedRow.Cells("telefono").Value.ToString()
-                miembroPorActualizar.Email = selectedRow.Cells("email").Value.ToString()
+                Dim miembroPorActualizar As New Miembros() With {
+                    .IdMiembro = CUInt(selectedRow.Cells("IdMiembro").Value),
+                    .Dni = selectedRow.Cells("Dni").Value.ToString(),
+                    .Nombre = selectedRow.Cells("Nombre").Value.ToString(),
+                    .Apellido = selectedRow.Cells("Apellido").Value.ToString(),
+                    .Genero = selectedRow.Cells("Genero").Value.ToString(),
+                    .Telefono = selectedRow.Cells("Telefono").Value.ToString(),
+                    .Email = selectedRow.Cells("Email").Value.ToString()
+                }
                 Dim frm As New FrmMiembrosPopup(False, Me, miembroPorActualizar)
                 frm.ShowDialog()
             Else
@@ -78,16 +76,13 @@ Public Class FrmMiembros
         Catch ex As Exception
             MsgBox("Error al seleccionar el miembro: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
-
-
     End Sub
-
 
     Public Sub Actualizar(miembroActualizado As Miembros)
         Try
             nMiembros.Actualizar(miembroActualizado)
             ActualizarDataGridView()
-            MsgBox("miembro actualizado exitosamente.", MsgBoxStyle.Information, "Exito")
+            MsgBox("Miembro actualizado exitosamente.", MsgBoxStyle.Information, "Éxito")
         Catch ex As Exception
             MsgBox("Error al actualizar el miembro: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
@@ -95,15 +90,16 @@ Public Class FrmMiembros
 
     Private Sub tbBuscar_TextChanged(sender As Object, e As EventArgs) Handles tbBuscar.TextChanged
         Try
+            Dim miembros As List(Of Miembros) = Nothing
+
             If cbOpcionBuscar.SelectedIndex = 0 Then
-                Dim dvMiembro As DataTable = nMiembros.BuscarPorNombre(tbBuscar.Text)
-                dgvListado.DataSource = dvMiembro
-                lblTotal.Text = "Total: " & dgvListado.Rows.Count.ToString()
+                miembros = nMiembros.ListarPorNombre(tbBuscar.Text)
             ElseIf cbOpcionBuscar.SelectedIndex = 1 Then
-                Dim dvMiembro As DataTable = nMiembros.BuscarPorDni(tbBuscar.Text)
-                dgvListado.DataSource = dvMiembro
-                lblTotal.Text = "Total: " & dgvListado.Rows.Count.ToString()
+                miembros = nMiembros.ListarPorDni(tbBuscar.Text)
             End If
+
+            dgvListado.DataSource = miembros
+            lblTotal.Text = "Total: " & miembros.Count.ToString()
         Catch ex As Exception
             MsgBox("Error al buscar miembro: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
@@ -113,20 +109,20 @@ Public Class FrmMiembros
         Try
             If dgvListado.SelectedRows.Count > 0 Then
                 Dim selectedRow As DataGridViewRow = dgvListado.SelectedRows(0)
-                Dim idMiembro As UInteger = CInt(selectedRow.Cells("id_miembro").Value)
+                Dim idMiembro As UInteger = CUInt(selectedRow.Cells("IdMiembro").Value)
 
-                Dim confirmacion As DialogResult = MessageBox.Show("¿Está seguro de que desea eliminar este Miembro?", "Confirmar eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                Dim confirmacion As DialogResult = MessageBox.Show("¿Está seguro de que desea eliminar este miembro?", "Confirmar eliminación", MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                 If confirmacion = DialogResult.Yes Then
                     nMiembros.Eliminar(idMiembro)
 
                     ActualizarDataGridView()
-                    MsgBox("Miembro eliminado exitosamente.", MsgBoxStyle.Information, "Exito")
+                    MsgBox("Miembro eliminado exitosamente.", MsgBoxStyle.Information, "Éxito")
                 End If
             Else
-                MsgBox("Seleccione un Miembro para eliminar.", MsgBoxStyle.Exclamation, "Aviso")
+                MsgBox("Seleccione un miembro para eliminar.", MsgBoxStyle.Exclamation, "Aviso")
             End If
         Catch ex As Exception
-            MsgBox("Error al eliminar el Miembro: " & ex.Message, MsgBoxStyle.Critical, "Error")
+            MsgBox("Error al eliminar el miembro: " & ex.Message, MsgBoxStyle.Critical, "Error")
         End Try
     End Sub
 End Class

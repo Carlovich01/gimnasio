@@ -6,7 +6,7 @@ Public Class NAsistencia
     Private dAsistencias As New DAsistencia()
 
 
-    Public Function Listar() As DataTable
+    Public Function Listar() As List(Of Asistencia)
         Try
             Return dAsistencias.Listar()
         Catch ex As Exception
@@ -18,32 +18,30 @@ Public Class NAsistencia
         Try
             Dim resultado As String = "Fallido_Otro"
             Dim idMembresiaValida As UInteger? = Nothing
-
-            Dim miembroTabla As DataTable = dAsistencias.ObtenerMiembroPorDNI(dni)
-            If miembroTabla.Rows.Count = 0 Then
+            Dim dmiembros As New DMiembros()
+            Dim dmembrecias As New DMembresias()
+            Dim miembro As Miembros = dmiembros.ObtenerPorDni(dni)
+            If miembro Is Nothing Then
                 resultado = "Fallido_DNI_NoEncontrado"
             Else
-                Dim idMiembro As UInteger = miembroTabla.Rows(0)("id_miembro")
 
-                Dim membresiaTabla As DataTable = dAsistencias.ValidarEstadoMembresia(idMiembro)
-                If membresiaTabla.Rows.Count = 0 Then
+                Dim membresia As Membresias = dmembrecias.ObtenerPorIdMiembroMasReciente(miembro.IdMiembro)
+                If membresia Is Nothing Then
                     resultado = "Fallido_No_Hay_Membresia"
                 Else
-                    Dim estadoMembresia As String = membresiaTabla.Rows(0)("estado_membresia").ToString()
-                    Select Case estadoMembresia
+                    Select Case membresia.EstadoMembresia
                         Case "Activa"
                             resultado = "Exitoso"
-                            idMembresiaValida = membresiaTabla.Rows(0)("id_membresia")
                         Case "Inactiva"
                             resultado = "Fallido_Membresia_Inactiva"
                     End Select
                 End If
 
                 Dim asistencia As New Asistencia() With {
-                .IdMiembro = idMiembro,
+                .IdMiembro = miembro.IdMiembro,
                 .FechaHoraCheckin = DateTime.Now,
                 .Resultado = resultado,
-                .IdMembresiaValida = idMembresiaValida
+                .IdMembresiaValida = membresia.IdMembresia
             }
                 dAsistencias.RegistrarAsistencia(asistencia)
             End If
@@ -55,21 +53,18 @@ Public Class NAsistencia
 
     End Function
 
-    Public Function BuscarPorDNI(dni As String) As DataTable
+    Public Function ListarPorDNI(dni As String) As List(Of Asistencia)
         Try
-            Dim dt As DataTable = dAsistencias.BuscarPorDNI(dni)
-            Return dt
+            Return dAsistencias.ListarPorDni(dni)
         Catch ex As Exception
             Throw New Exception("Error al buscar por DNI: " & ex.Message)
         End Try
     End Function
 
 
-    Public Function BuscarPorFecha(fechaInicio As DateTime, fechaFin As DateTime) As DataTable
+    Public Function ListarPorFecha(fechaInicio As DateTime, fechaFin As DateTime) As List(Of Asistencia)
         Try
-            Dim dvPagos As DataTable
-            dvPagos = dAsistencias.BuscarPorFecha(fechaInicio, fechaFin)
-            Return dvPagos
+            Return dAsistencias.ListarPorFecha(fechaInicio, fechaFin)
         Catch ex As Exception
             Throw New Exception(ex.Message)
         End Try

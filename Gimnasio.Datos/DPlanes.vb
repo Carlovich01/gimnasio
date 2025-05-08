@@ -3,11 +3,28 @@ Imports System.Data
 Imports Gimnasio.Entidades
 
 Public Class DPlanes
-    Inherits ConexionBase
+    Inherits Conexion
 
-    Public Function Listar() As DataTable
+    Private Function MapearPlanes(tabla As DataTable) As List(Of Planes)
+        Dim listaPlanes As New List(Of Planes)()
+        For Each row As DataRow In tabla.Rows
+            Dim plan As New Planes() With {
+                .IdPlan = Convert.ToUInt32(row("id_plan")),
+                .NombrePlan = row("nombre_plan").ToString(),
+                .Descripcion = row("descripcion").ToString(),
+                .DuracionDias = Convert.ToUInt32(row("duracion_dias")),
+                .Precio = Convert.ToDecimal(row("precio")),
+                .FechaCreacion = Convert.ToDateTime(row("fecha_creacion")),
+                .UltimaModificacion = Convert.ToDateTime(row("ultima_modificacion"))
+            }
+            listaPlanes.Add(plan)
+        Next
+        Return listaPlanes
+    End Function
+    Public Function Listar() As List(Of Planes)
         Dim query As String = "SELECT * FROM planes_membresia ORDER BY ultima_modificacion DESC"
-        Return ExecuteQuery(query, Nothing)
+        Dim resultado As DataTable = ExecuteQuery(query, Nothing)
+        Return MapearPlanes(resultado)
     End Function
 
     Public Sub Insertar(Obj As Planes)
@@ -41,27 +58,30 @@ Public Class DPlanes
         ExecuteNonQuery(query, parameters)
     End Sub
 
-    Public Function BuscarPorNombre(nombre As String) As DataTable
+    Public Function ListarPorNombre(nombre As String) As List(Of Planes)
         Dim query As String = "SELECT * FROM planes_membresia WHERE nombre_plan LIKE @nombre ORDER BY ultima_modificacion DESC"
         Dim parameters As New Dictionary(Of String, Object) From {
             {"@nombre", "%" & nombre & "%"}
         }
-        Return ExecuteQuery(query, parameters)
+        Dim resultado As DataTable = ExecuteQuery(query, parameters)
+        Return MapearPlanes(resultado)
     End Function
 
-    Public Function BuscarPorDuracion(duracion As Integer) As DataTable
+    Public Function ListarPorDuracion(duracion As Integer) As List(Of Planes)
         Dim query As String = "SELECT * FROM planes_membresia WHERE duracion_dias = @duracion ORDER BY ultima_modificacion DESC"
         Dim parameters As New Dictionary(Of String, Object) From {
             {"@duracion", duracion}
         }
-        Return ExecuteQuery(query, parameters)
+        Dim resultado As DataTable = ExecuteQuery(query, parameters)
+        Return MapearPlanes(resultado)
     End Function
 
-    Public Function BuscarPorPrecio(precio As Decimal) As DataTable
+    Public Function ListarPorPrecio(precio As Decimal) As List(Of Planes)
         Dim query As String = "SELECT * FROM planes_membresia WHERE precio = @precio ORDER BY ultima_modificacion DESC"
         Dim parameters As New Dictionary(Of String, Object) From {
             {"@precio", precio}
         }
-        Return ExecuteQuery(query, parameters)
+        Dim resultado As DataTable = ExecuteQuery(query, parameters)
+        Return MapearPlanes(resultado)
     End Function
 End Class
